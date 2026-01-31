@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/dashboard/route": "/api/dashboard",
+  "/api/geocode/route": "/api/geocode",
+  "/api/scans/[id]/route": "/api/scans/[id]",
+  "/api/scans/route": "/api/scans",
+  "/page": "/",
+  "/reports/page": "/reports",
+  "/scans/[id]/page": "/scans/[id]",
+  "/scans/new/page": "/scans/new",
+  "/scans/page": "/scans",
+  "/schedules/page": "/schedules",
+  "/settings/page": "/settings"
+}

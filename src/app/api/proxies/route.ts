@@ -1,0 +1,65 @@
+import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+    try {
+        const proxies = await prisma.proxy.findMany({
+            orderBy: { createdAt: 'desc' },
+        });
+        return NextResponse.json({ proxies });
+    } catch (error) {
+        console.error('Proxies GET error:', error);
+        return NextResponse.json({ proxies: [] });
+    }
+}
+
+export async function POST(req: Request) {
+    try {
+        const data = await req.json();
+        const proxy = await prisma.proxy.create({
+            data: {
+                host: data.host,
+                port: parseInt(data.port),
+                username: data.username || null,
+                password: data.password || null,
+                type: data.type || 'RESIDENTIAL',
+                enabled: data.enabled !== undefined ? data.enabled : true,
+            },
+        });
+        return NextResponse.json(proxy);
+    } catch (error) {
+        console.error('Proxy creation error:', error);
+        return NextResponse.json({ error: 'Failed to create proxy' }, { status: 500 });
+    }
+}
+
+export async function PUT(req: Request) {
+    try {
+        const { id, ...data } = await req.json();
+        const proxy = await prisma.proxy.update({
+            where: { id },
+            data: {
+                ...data,
+                port: data.port ? parseInt(data.port) : undefined,
+            },
+        });
+        return NextResponse.json(proxy);
+    } catch (error) {
+        console.error('Proxy update error:', error);
+        return NextResponse.json({ error: 'Failed to update proxy' }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
+        if (!id) throw new Error('Proxy ID required');
+
+        await prisma.proxy.delete({ where: { id } });
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Proxy delete error:', error);
+        return NextResponse.json({ error: 'Failed to delete proxy' }, { status: 500 });
+    }
+}

@@ -16,6 +16,11 @@ model Scan {
   centerLng   Float
   radius      Float
   gridSize    Int         @default(3) // e.g., 3x3, 5x5
+  shape       String      @default("SQUARE") // SQUARE, CIRCLE, ZIP
+  customPoints String?     // Optional JSON string of manual coordinates
+  frequency   String      @default("ONCE") // ONCE, DAILY, WEEKLY
+  nextRun     DateTime?
+  businessName String?     // Name of business to track ranking for (optional)
   results     Result[]
 }
 
@@ -29,4 +34,24 @@ model Result {
   targetName   String?  // Target business name to track
   topResults   String   // List of top 20 businesses found at this point (JSON string)
   capturedAt   DateTime @default(now())
+}
+
+model Proxy {
+  id           String   @id @default(cuid())
+  host         String
+  port         Int
+  username     String?
+  password     String?
+  type         String   @default("RESIDENTIAL") // RESIDENTIAL, DATACENTER
+  enabled      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  type      String   // RANK_UP, RANK_DOWN, SCAN_ERROR
+  message   String
+  scanId    String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
 }

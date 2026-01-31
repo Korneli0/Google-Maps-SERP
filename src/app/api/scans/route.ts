@@ -1,37 +1,62 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 import { runScan } from '@/lib/scanner';
+
+export async function GET() {
+    try {
+        const scans = await prisma.scan.findMany({
+            orderBy: { createdAt: 'desc' },
+        });
+        return NextResponse.json({ scans });
+    } catch (error) {
+        console.error('Scans GET error:', error);
+        return NextResponse.json({ scans: [] });
+    }
+}
 
 export async function POST(req: Request) {
     try {
-        const { keyword, address, radius, gridSize } = await req.json();
+        const {
+            keyword,
+            radius,
+            gridSize,
+            frequency,
+            businessName,
+            shape,
+            customPoints,
+            lat,
+            lng
+        } = await req.json();
 
-        // In a real app, we'd geocode the address. 
-        // For this POC, let's use a dummy center if not provided or just hardcode for testing.
-        // Ideally use Google Maps Geocoding API or a free alternative.
-        // LETS GOogle it or assume a fixed one for now or mock it.
-
-        // MOCKING Geocoding Chicago center for now
-        const centerLat = 41.8781;
-        const centerLng = -87.6298;
+        // Use provided coordinates or default to Chicago (Mock)
+        const centerLat = lat || 41.8781;
+        const centerLng = lng || -87.6298;
 
         const scan = await prisma.scan.create({
             data: {
                 keyword,
                 centerLat,
                 centerLng,
-                radius: parseFloat(radius),
-                gridSize: parseInt(gridSize),
+                radius: parseFloat(radius) || 5,
+                gridSize: parseInt(gridSize) || 3,
+                shape: shape || 'SQUARE',
+                customPoints: customPoints ? JSON.stringify(customPoints) : null,
+                frequency: frequency || 'ONCE',
+                businessName: businessName || undefined,
                 status: 'PENDING',
             },
         });
 
-        // Run the scan in the background (fire and forget for now, or use a worker)
+        // Start scan in background
         runScan(scan.id).catch(console.error);
 
         return NextResponse.json(scan);
     } catch (error) {
-        console.error('API Error:', error);
-        return NextResponse.json({ error: 'Failed to create scan' }, { status: 500 });
+        console.error('Scan creation CRITICAL error:', error);
+        if (error instanceof Error) {
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
+        }
+        return NextResponse.json({ error: 'Failed to create scan', details: String(error) }, { status: 500 });
     }
 }

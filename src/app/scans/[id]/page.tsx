@@ -1,82 +1,508 @@
-import { prisma } from '@/lib/prisma';
-import { MapPin, Calendar, Target, ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
+'use client';
 
-export default async function ScanReportPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+import { useEffect, useState, use } from 'react';
+import dynamic from 'next/dynamic';
+import { RefreshCw, Trophy, List, ChevronLeft, ChevronRight, ExternalLink, MapPin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Card, Button, Badge, Input } from '@/components/ui';
+import { exportToXLSX, exportToPDF } from '@/lib/export';
+import { ScanHeader } from '@/components/scans/ScanHeader';
+import { AIInsights } from '@/components/scans/AIInsights';
+import { PinInspectionSidebar } from '@/components/scans/PinInspectionSidebar';
+import { BusinessCard } from '@/components/scans/BusinessCard';
 
-    const scan = await prisma.scan.findUnique({
-        where: { id },
-        include: { results: true },
+// Dynamically import Map component to avoid SSR issues with Leaflet
+const MapComponent = dynamic(() => import('@/components/ui/Map'), {
+    ssr: false,
+    loading: () => (
+        <div className="h-full w-full flex items-center justify-center bg-gray-100">
+            <RefreshCw className="w-8 h-8 text-gray-400 animate-spin" />
+        </div>
+    ),
+});
+
+interface Result {
+    id: string;
+    lat: number;
+    lng: number;
+    rank: number | null;
+    topResults: string; // JSON string
+}
+
+interface Scan {
+    id: string;
+    keyword: string;
+    status: string;
+    gridSize: number;
+    radius: number;
+    frequency: string;
+    createdAt: string;
+    centerLat: number;
+    centerLng: number;
+    businessName?: string;
+    results: Result[];
+}
+
+interface RankedBusiness {
+    name: string;
+    rank: number;
+    url?: string;
+    address?: string;
+    rating?: number;
+    reviews?: number;
+}
+
+export default function ScanReportPage({ params }: { params: Promise<{ id: string }> }) {
+    const router = useRouter();
+    const resolvedParams = use(params);
+    const [scan, setScan] = useState<Scan | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState<'map' | 'list' | 'competitors'>('map');
+    const [selectedPoint, setSelectedPoint] = useState<Result | null>(null);
+    const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+    const [filter, setFilter] = useState<'all' | 'top3' | 'top10' | 'unranked'>('all');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sharing, setSharing] = useState(false);
+
+    useEffect(() => {
+        const fetchScan = () => {
+            fetch(`/api/scans/${resolvedParams.id}`)
+                .then(res => res.json())
+                .then(data => setScan(data.scan))
+                .catch(console.error)
+                .finally(() => setLoading(false));
+        };
+
+        fetchScan();
+
+        const interval = setInterval(() => {
+            if (scan?.status === 'RUNNING' || scan?.status === 'PENDING') {
+                fetchScan();
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [resolvedParams.id, scan?.status]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <RefreshCw className="animate-spin text-gray-400" />
+            </div>
+        );
+    }
+
+    if (!scan) return <div>Scan not found</div>;
+
+    const totalPoints = scan.gridSize * scan.gridSize;
+    const completedPoints = scan.results.length;
+
+    const avgRank = scan.results.reduce((acc, r) => acc + (r.rank || 20), 0) / (completedPoints || 1);
+
+    const getTopResults = (jsonStr: string): RankedBusiness[] => {
+        try {
+            return JSON.parse(jsonStr);
+        } catch (e) {
+            return [];
+        }
+    };
+
+    const toggleRow = (id: string) => {
+        const next = new Set(expandedRows);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        setExpandedRows(next);
+    };
+
+    const filteredResults = scan.results.filter(r => {
+        if (filter === 'top3') return r.rank && r.rank <= 3;
+        if (filter === 'top10') return r.rank && r.rank <= 10;
+        if (filter === 'unranked') return !r.rank;
+        return true;
+    }).filter(r => {
+        if (!searchQuery) return true;
+        const results = getTopResults(r.topResults);
+        return results.some(b => b.name.toLowerCase().includes(searchQuery.toLowerCase()));
     });
 
-    if (!scan) return <div className="p-8">Scan not found</div>;
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this report? This action cannot be undone.')) return;
+        try {
+            const res = await fetch(`/api/scans/${scan.id}`, { method: 'DELETE' });
+            if (res.ok) router.push('/scans');
+        } catch (error) {
+            console.error('Delete failed:', error);
+            alert('Failed to delete scan');
+        }
+    };
+
+    const handleStop = async () => {
+        if (!confirm('Stop this scan? Results collected so far will be saved.')) return;
+        try {
+            const res = await fetch(`/api/scans/${scan.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'STOPPED' })
+            });
+            if (res.ok) {
+                setScan(prev => prev ? { ...prev, status: 'STOPPED' } : null);
+            }
+        } catch (error) {
+            console.error('Stop failed:', error);
+            alert('Failed to stop scan');
+        }
+    };
+
+    const handleExportXLSX = () => {
+        if (!scan) return;
+        exportToXLSX(scan.keyword, scan.results);
+    };
+
+    const handleExportPDF = () => {
+        if (!scan) return;
+        exportToPDF(scan.keyword, scan.results);
+    };
+
+    const handleShare = async () => {
+        if (sharing) return;
+        const url = window.location.href;
+
+        if (navigator.share) {
+            setSharing(true);
+            try {
+                await navigator.share({
+                    title: `GeoRanker Report: ${scan.keyword}`,
+                    text: `Check out the local ranking report for "${scan.keyword}"`,
+                    url: url,
+                });
+            } catch (err: any) {
+                if (err.name !== 'AbortError' && err.name !== 'InvalidStateError') {
+                    console.error('Error sharing:', err);
+                }
+                // Fallback to clipboard if it fails or if the user cancels but we want to be helpful
+                try {
+                    await navigator.clipboard.writeText(url);
+                } catch (clipErr) {
+                    console.error('Clipboard fallback failed:', clipErr);
+                }
+            } finally {
+                setSharing(false);
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(url);
+                alert('Report link copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy link. Please copy the URL manually.');
+            }
+        }
+    };
 
     return (
-        <main className="min-h-screen p-8 max-w-7xl mx-auto">
-            <header className="mb-12">
-                <Link
-                    href="/"
-                    className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
-                >
-                    <ChevronLeft size={20} />
-                    Back to Dashboard
-                </Link>
-                <div className="flex justify-between items-end">
-                    <div>
-                        <h1 className="text-4xl font-bold mb-2">"{scan.keyword}"</h1>
-                        <div className="flex gap-6 text-gray-400">
-                            <span className="flex items-center gap-2">
-                                <Calendar size={18} /> {new Date(scan.createdAt).toLocaleString()}
-                            </span>
-                            <span className="flex items-center gap-2">
-                                <MapPin size={18} /> {scan.centerLat.toFixed(4)}, {scan.centerLng.toFixed(4)}
-                            </span>
-                            <span className="flex items-center gap-2 text-blue-400 font-semibold">
-                                <Target size={18} /> {scan.gridSize}x{scan.gridSize} Grid
-                            </span>
-                        </div>
-                    </div>
-                    <div className={`px-6 py-2 rounded-full font-bold ${scan.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 animate-pulse'
-                        }`}>
-                        {scan.status}
-                    </div>
-                </div>
-            </header>
+        <div className="max-w-[1600px] mx-auto space-y-6">
+            <ScanHeader
+                scan={scan}
+                onStop={handleStop}
+                onDelete={handleDelete}
+                onExportXLSX={handleExportXLSX}
+                onExportPDF={handleExportPDF}
+                onShare={handleShare}
+            />
 
-            {/* Grid Visualization */}
-            <section className="bg-zinc-900 border border-zinc-800 rounded-3xl p-12 overflow-auto flex justify-center items-center gap-4">
-                <div
-                    className="grid gap-4"
-                    style={{
-                        gridTemplateColumns: `repeat(${scan.gridSize}, minmax(0, 1fr))`,
-                        width: 'fit-content'
-                    }}
-                >
-                    {Array.from({ length: scan.gridSize * scan.gridSize }).map((_, i) => {
-                        const result = scan.results[i];
-                        return (
-                            <div
-                                key={i}
-                                className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-xl cursor-help transition-all transform hover:scale-110 shadow-lg ${result ? 'bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/40' : 'bg-zinc-800 text-zinc-600 border-2 border-zinc-700'
-                                    }`}
-                                title={result ? `Lat: ${result.lat}\nLng: ${result.lng}` : 'Pending...'}
-                            >
-                                {result ? (i + 1) : '?'}
+            {/* Competitor Performance Analytics */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-black text-gray-900 uppercase tracking-widest flex items-center gap-2">
+                        <Trophy size={18} className="text-blue-600" />
+                        Top Competitors Detected
+                    </h2>
+                    <Button variant="ghost" size="sm" onClick={() => setActiveTab('list')} className="text-blue-600 font-bold text-xs uppercase tracking-wider">
+                        View All Contributors
+                    </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {(() => {
+                        const competitorsMap = new Map<string, {
+                            name: string,
+                            avgRank: number,
+                            appearances: number,
+                            top3: number,
+                            top10: number,
+                            url?: string
+                        }>();
+
+                        scan.results.forEach(r => {
+                            const results = getTopResults(r.topResults);
+                            results.forEach(biz => {
+                                const entry = competitorsMap.get(biz.name) || {
+                                    name: biz.name,
+                                    avgRank: 0,
+                                    appearances: 0,
+                                    top3: 0,
+                                    top10: 0,
+                                    url: biz.url
+                                };
+                                entry.appearances += 1;
+                                entry.avgRank += biz.rank;
+                                if (biz.rank <= 3) entry.top3 += 1;
+                                if (biz.rank <= 10) entry.top10 += 1;
+                                competitorsMap.set(biz.name, entry);
+                            });
+                        });
+
+                        const sorted = Array.from(competitorsMap.values())
+                            .map(c => ({ ...c, avgRank: c.avgRank / c.appearances }))
+                            .filter(c => c.name.toLowerCase() !== scan.businessName?.toLowerCase())
+                            .sort((a, b) => b.appearances - a.appearances || a.avgRank - b.avgRank)
+                            .slice(0, 3);
+
+                        return sorted.map((comp, idx) => (
+                            <Card key={idx} className="p-4 border-l-4 border-l-blue-500 hover:shadow-lg transition-all">
+                                <div className="flex justify-between items-start mb-3">
+                                    <div className="bg-blue-50 text-blue-600 font-black text-[10px] px-2 py-1 rounded uppercase">Rank #{idx + 1} Share</div>
+                                    <span className="text-[10px] text-gray-400 font-mono">Found in {comp.appearances} points</span>
+                                </div>
+                                <h4 className="font-bold text-gray-900 truncate mb-2">{comp.name}</h4>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="bg-gray-50 p-2 rounded-lg">
+                                        <p className="text-[9px] text-gray-400 uppercase font-bold">Avg Rank</p>
+                                        <p className="text-sm font-black text-gray-900">#{comp.avgRank.toFixed(1)}</p>
+                                    </div>
+                                    <div className="bg-gray-50 p-2 rounded-lg">
+                                        <p className="text-[9px] text-gray-400 uppercase font-bold">Top 3 Hits</p>
+                                        <p className="text-sm font-black text-emerald-600">{comp.top3}</p>
+                                    </div>
+                                </div>
+                            </Card>
+                        ));
+                    })()}
+                </div>
+            </div>
+
+            <AIInsights avgRank={avgRank} scan={scan} totalPoints={totalPoints} />
+
+            {/* Main Content Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                {/* Main Map/List View */}
+                <div className="lg:col-span-3">
+                    <Card noPadding className="overflow-hidden h-[85vh] flex flex-col border-none shadow-xl ring-1 ring-gray-200">
+                        {/* Toolkit Bar */}
+                        <div className="p-3 border-b border-gray-100 bg-white flex justify-between items-center z-10">
+                            <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
+                                <button
+                                    onClick={() => setActiveTab('map')}
+                                    className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'map' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+                                >
+                                    Spatial View
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('list')}
+                                    className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+                                >
+                                    Grid Status
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('competitors')}
+                                    className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'competitors' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}
+                                >
+                                    Competitors
+                                </button>
                             </div>
-                        );
-                    })}
-                </div>
-            </section>
+                            <div className="flex items-center gap-3">
+                                {activeTab === 'competitors' ? (
+                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Market Share analysis</span>
+                                ) : (
+                                    <>
+                                        <div className="relative">
+                                            <Input
+                                                placeholder="Search business..."
+                                                className="h-8 w-48 text-xs pl-8 bg-gray-50 border-gray-100"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                            />
+                                            <List className="absolute left-2.5 top-2 text-gray-400" size={12} />
+                                        </div>
+                                        <select
+                                            className="text-xs font-bold bg-gray-50 border border-gray-100 rounded-md h-8 px-2 outline-none focus:ring-1 focus:ring-blue-500"
+                                            value={filter}
+                                            onChange={(e) => setFilter(e.target.value as any)}
+                                        >
+                                            <option value="all">All Ranks</option>
+                                            <option value="top3">Top 3 Only</option>
+                                            <option value="top10">Top 10 Only</option>
+                                            <option value="unranked">Unranked</option>
+                                        </select>
+                                    </>
+                                )}
+                                <span className="text-[10px] text-gray-400 font-mono tracking-tighter uppercase font-bold">Progress: {completedPoints}/{totalPoints}</span>
+                            </div>
+                        </div>
 
-            {/* Results Table (Optional detail) */}
-            <section className="mt-12">
-                <h2 className="text-2xl font-bold mb-6">Point Statistics</h2>
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden">
-                    {/* Add dynamic result details here */}
-                    <p className="p-6 text-gray-400 italic">Click a point on the grid above (Interactive features coming soon)</p>
+                        <div className="flex-1 relative bg-gray-50 overflow-hidden">
+                            {activeTab === 'map' ? (
+                                <MapComponent
+                                    center={[scan.centerLat, scan.centerLng]}
+                                    zoom={13}
+                                    points={scan.results.map(r => ({ ...r, hasData: true })) || []}
+                                    gridSize={scan.gridSize}
+                                    onPointClick={(point) => setSelectedPoint(point as unknown as Result)}
+                                />
+                            ) : activeTab === 'list' ? (
+                                <div className="h-full bg-white overflow-y-auto custom-scrollbar">
+                                    <div className="divide-y divide-gray-100">
+                                        {filteredResults.map((r) => {
+                                            const isExpanded = expandedRows.has(r.id);
+                                            const topResults = getTopResults(r.topResults);
+                                            return (
+                                                <div key={r.id} className="transition-all">
+                                                    <div
+                                                        onClick={() => toggleRow(r.id)}
+                                                        className={`p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors ${isExpanded ? 'bg-blue-50/20 shadow-inner' : ''}`}
+                                                    >
+                                                        <div className="flex items-center gap-6">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">Grid Anchor</span>
+                                                                <span className="text-xs font-bold text-gray-600">{r.lat.toFixed(4)}, {r.lng.toFixed(4)}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-center">
+                                                                <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">Positional Rank</span>
+                                                                {r.rank ? (
+                                                                    <Badge variant={r.rank <= 3 ? 'success' : r.rank <= 10 ? 'warning' : 'destructive'} className="h-5 font-black text-[10px]">
+                                                                        #{r.rank}
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Badge variant="outline" className="h-5 text-[10px] font-bold">MISSING</Badge>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">Local Entities</span>
+                                                                <span className="text-xs font-bold text-gray-800">{topResults.length} Competitors</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`p-1.5 rounded-full transition-all ${isExpanded ? 'bg-blue-100 text-blue-600' : 'bg-gray-50 text-gray-400'}`}>
+                                                                {isExpanded ? <ChevronLeft className="rotate-90" size={12} /> : <ChevronRight size={12} />}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {isExpanded && (
+                                                        <div className="bg-gray-50/80 p-5 ml-4 mb-3 mr-4 rounded-b-2xl border-x border-b border-gray-100 shadow-sm animate-in slide-in-from-top-2 duration-200">
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                                {topResults.map((biz, idx) => (
+                                                                    <BusinessCard
+                                                                        key={idx}
+                                                                        biz={biz}
+                                                                        scan={scan}
+                                                                        compact={true}
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="h-full bg-white overflow-y-auto no-scrollbar">
+                                    <div className="p-4">
+                                        <table className="w-full text-left text-xs">
+                                            <thead>
+                                                <tr className="border-b border-gray-100">
+                                                    <th className="pb-3 font-black text-gray-400 uppercase tracking-widest">Business Name</th>
+                                                    <th className="pb-3 font-black text-gray-400 uppercase tracking-widest">Appearances</th>
+                                                    <th className="pb-3 font-black text-gray-400 uppercase tracking-widest text-center">Efficiency</th>
+                                                    <th className="pb-3 font-black text-gray-400 uppercase tracking-widest">Rank Stats</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50">
+                                                {(() => {
+                                                    const competitorsMap = new Map<string, {
+                                                        name: string,
+                                                        avgRank: number,
+                                                        appearances: number,
+                                                        top3: number,
+                                                        top10: number,
+                                                        other: number
+                                                    }>();
+
+                                                    scan.results.forEach(r => {
+                                                        const results = getTopResults(r.topResults);
+                                                        results.forEach(biz => {
+                                                            const entry = competitorsMap.get(biz.name) || {
+                                                                name: biz.name,
+                                                                avgRank: 0,
+                                                                appearances: 0,
+                                                                top3: 0,
+                                                                top10: 0,
+                                                                other: 0
+                                                            };
+                                                            entry.appearances += 1;
+                                                            entry.avgRank += biz.rank;
+                                                            if (biz.rank <= 3) entry.top3 += 1;
+                                                            else if (biz.rank <= 10) entry.top10 += 1;
+                                                            else entry.other += 1;
+                                                            competitorsMap.set(biz.name, entry);
+                                                        });
+                                                    });
+
+                                                    return Array.from(competitorsMap.values())
+                                                        .map(c => ({ ...c, avgRank: c.avgRank / c.appearances }))
+                                                        .sort((a, b) => b.appearances - a.appearances || a.avgRank - b.avgRank)
+                                                        .map((comp, idx) => (
+                                                            <tr key={idx} className="hover:bg-gray-50/50 transition-colors group">
+                                                                <td className="py-4">
+                                                                    <p className="font-black text-gray-900 group-hover:text-blue-600 transition-colors">{comp.name}</p>
+                                                                    {comp.name.toLowerCase() === scan.businessName?.toLowerCase() && (
+                                                                        <Badge variant="blue" className="mt-1">Target Account</Badge>
+                                                                    )}
+                                                                </td>
+                                                                <td className="py-4">
+                                                                    <div className="flex flex-col">
+                                                                        <span className="font-bold text-gray-700">{comp.appearances} / {totalPoints} Points</span>
+                                                                        <span className="text-[10px] text-gray-400">Visibility: {((comp.appearances / totalPoints) * 100).toFixed(1)}%</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="py-4">
+                                                                    <div className="flex items-center justify-center gap-4">
+                                                                        <div className="text-center">
+                                                                            <p className="text-[9px] text-gray-400 uppercase font-black mb-1">Top 3</p>
+                                                                            <p className="text-xs font-black text-emerald-600">{(comp.top3)}</p>
+                                                                        </div>
+                                                                        <div className="text-center">
+                                                                            <p className="text-[9px] text-gray-400 uppercase font-black mb-1">Top 10</p>
+                                                                            <p className="text-xs font-black text-amber-500">{(comp.top10)}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="py-4">
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-xs font-black text-gray-900">Avg: #{comp.avgRank.toFixed(1)}</span>
+                                                                        <div className="flex h-1.5 w-24 bg-gray-100 rounded-full mt-1.5 overflow-hidden">
+                                                                            <div className="h-full bg-emerald-500" style={{ width: `${(comp.top3 / comp.appearances) * 100}%` }} />
+                                                                            <div className="h-full bg-amber-400" style={{ width: `${(comp.top10 / comp.appearances) * 100}%` }} />
+                                                                            <div className="h-full bg-gray-300" style={{ width: `${(comp.other / comp.appearances) * 100}%` }} />
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ));
+                                                })()}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </Card>
                 </div>
-            </section>
-        </main>
+
+                {/* Dynamic Sidebar: Results Inspection */}
+                <PinInspectionSidebar selectedPoint={selectedPoint} getTopResults={getTopResults} scan={scan} />
+            </div>
+        </div>
     );
 }

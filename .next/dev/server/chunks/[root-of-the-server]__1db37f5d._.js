@@ -262,7 +262,7 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ;
 async function POST(req) {
     try {
-        const { keyword, address, radius, gridSize } = await req.json();
+        const { keyword, address, radius, gridSize, frequency } = await req.json();
         // In a real app, we'd geocode the address. 
         // For this POC, let's use a dummy center if not provided or just hardcode for testing.
         // Ideally use Google Maps Geocoding API or a free alternative.
@@ -277,6 +277,7 @@ async function POST(req) {
                 centerLng,
                 radius: parseFloat(radius),
                 gridSize: parseInt(gridSize),
+                frequency: frequency || 'ONCE',
                 status: 'PENDING'
             }
         });

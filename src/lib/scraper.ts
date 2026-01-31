@@ -5,89 +5,113 @@ export interface ScrapeResult {
     rating?: number;
     reviews?: number;
     address?: string;
+    url?: string;
     rank: number;
 }
 
-export async function scrapeGMB(keyword: string, lat: number, lng: number): Promise<ScrapeResult[]> {
-    const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext({
-        viewport: { width: 1280, height: 800 },
-        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    });
-
-    // Grant geolocation permissions
-    await context.grantPermissions(['geolocation']);
-    await context.setGeolocation({ latitude: lat, longitude: lng });
-
-    const page = await context.newPage();
-
+export async function scrapeGMB(page: Page, keyword: string, lat: number, lng: number): Promise<ScrapeResult[]> {
     try {
-        // Navigate to Google Maps
+        console.log(`[Scraper] Starting scrape for: ${keyword} at ${lat}, ${lng}`);
+
+        // Navigate with a more realistic timeout and wait strategy
+        // Google Maps takes a long time to reach networkidle, so we use domcontentloaded
         await page.goto(`https://www.google.com/maps/search/${encodeURIComponent(keyword)}/@${lat},${lng},14z/`, {
-            waitUntil: 'networkidle',
+            waitUntil: 'domcontentloaded',
             timeout: 60000,
         });
 
-        // Wait for the results list to appear - try multiple possible selectors
+        // Wait for results to load - use multiple common selectors
         try {
-            await page.waitForSelector('[role="feed"]', { timeout: 15000 });
+            await page.waitForFunction(() => {
+                return !!(document.querySelector('[role="article"]') ||
+                    document.querySelector('.qBF1Pd') ||
+                    document.querySelector('[role="feed"]'));
+            }, { timeout: 20000 });
         } catch (e) {
-            console.log('Feed not found immediately, trying to interact...');
+            console.log('[Scraper] Warning: Standard result selectors not found, trying fallback extraction anyway.');
         }
 
-        // Scroll to load more results (mimic user behavior)
-        const feedSelector = '[role="feed"]';
-        for (let i = 0; i < 4; i++) {
-            const feed = await page.$(feedSelector);
-            if (feed) {
-                await feed.evaluate(node => node.scrollTop += 2000);
-            }
-            await page.waitForTimeout(1000 + Math.random() * 2000);
+        // Mimic human scrolling behavior
+        for (let i = 0; i < 3; i++) {
+            await page.evaluate(() => {
+                const scrollable = document.querySelector('[role="feed"]') || document.body;
+                scrollable.scrollBy(0, 800);
+            });
+            await page.waitForTimeout(1000 + Math.random() * 1000);
         }
 
-        // Extract results using more generic structure assumptions
+        // Extract results with robust, multiple-path selectors
+        // We use a self-invoking function string to avoid any transpilation artifacts like __name
         const results: ScrapeResult[] = await page.evaluate(() => {
-            // Helper to find text safely
-            const getText = (el: Element | null) => el?.textContent?.trim() || '';
+            const extracted: any[] = [];
 
-            const items = Array.from(document.querySelectorAll('div[role="article"]')); // often the main container for a result
+            // Priority 1: Articles with specific roles
+            let items = Array.from(document.querySelectorAll('div[role="article"]'));
 
-            return items.slice(0, 20).map((item, index) => {
-                // Name is usually in a specialized font style or heading
-                const nameEl = item.querySelector('.fontHeadlineSmall') || item.querySelector('[aria-label]');
-                const name = getText(nameEl) || (item.getAttribute('aria-label') || 'Unknown');
+            // Priority 2: Links that look like place profiles
+            if (items.length === 0) {
+                const links = Array.from(document.querySelectorAll('a[href*="/maps/place/"]'));
+                items = links.map(l => l.closest('div') || l).filter(Boolean) as Element[];
+            }
 
-                // Rating often has aria-label "4.5 stars"
-                const ratingEl = item.querySelector('[role="img"][aria-label*="stars"]') || item.querySelector('.fontBodyMedium span[role="img"]');
+            const seenNames = new Set();
+
+            items.forEach((item) => {
+                if (extracted.length >= 20) return;
+
+                let name = '';
+                const ariaLabel = item.getAttribute('aria-label');
+                if (ariaLabel && !ariaLabel.includes('stars') && ariaLabel.length > 2) {
+                    name = ariaLabel;
+                }
+
+                // Strategy B: Specific class signatures
+                if (!name) {
+                    const nameEl = item.querySelector('.fontHeadlineSmall, .qBF1Pd, [role="heading"]');
+                    name = nameEl?.textContent?.trim() || '';
+                }
+
+                if (!name || name.length < 2) return;
+                name = name.split(' · ')[0].replace(/\. \d+$/, '').trim();
+
+                if (seenNames.has(name.toLowerCase())) return;
+                seenNames.add(name.toLowerCase());
+
+                // URL/Link Extraction
+                const linkEl = item.querySelector('a[href*="/maps/place/"]') || item.closest('a[href*="/maps/place/"]');
+                const url = linkEl ? (linkEl as HTMLAnchorElement).href : '';
+
+                // Rating & Reviews extraction
+                const ratingEl = item.querySelector('[role="img"][aria-label*="stars"]');
                 const ratingLabel = ratingEl?.getAttribute('aria-label') || '';
                 const ratingMatch = ratingLabel.match(/([0-9.]+)\s+stars/);
                 const rating = ratingMatch ? parseFloat(ratingMatch[1]) : undefined;
 
-                // Reviews count often follows the rating
-                const reviewsEl = item.querySelector('[aria-label*="reviews"]');
-                const reviewsText = reviewsEl?.getAttribute('aria-label') || getText(reviewsEl);
-                const reviews = reviewsText ? parseInt(reviewsText.replace(/[^0-9]/g, '')) : undefined;
+                const reviewsMatch = ratingLabel.match(/\(([\d,]+)\)/) || ratingLabel.match(/([\d,]+)\s+reviews/);
+                const reviews = reviewsMatch ? parseInt(reviewsMatch[1].replace(/,/g, '')) : 0;
 
-                // Address is inconsistent, but often in the second line of text
-                const container = item.closest('[jsaction]') || item;
-                const textLines = (container as HTMLElement).innerText.split('\n');
-                const address = textLines.length > 2 ? textLines.find(l => l.match(/\d+.*,.*\d+/)) || textLines[2] : '';
+                const text = (item as HTMLElement).innerText || '';
+                const lines = text.split('\n');
+                const address = lines.find(l => l.match(/\d+/) && l !== name && l.length > 5) || '';
 
-                return {
-                    name: name.replace(/\. \d+$/, ''), // remove rank suffix if present
+                extracted.push({
+                    name,
                     rating,
                     reviews,
-                    address: address || '',
-                    rank: index + 1,
-                };
+                    address: address.trim(),
+                    url,
+                    rank: extracted.length + 1
+                });
             });
+
+            return extracted;
         });
 
+        console.log(`[Scraper] Successfully extracted ${results.length} results.`);
         return results;
+
     } catch (error) {
-        console.error(`Scrape failed for ${lat},${lng}:`, error);
+        console.error(`[Scraper] Error scraping ${lat},${lng}:`, error);
         return [];
-    } finally {
-        await browser.close();
     }
 }

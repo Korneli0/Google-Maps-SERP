@@ -1,113 +1,211 @@
-import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
-import { Search, Map as MapIcon, Plus, History } from 'lucide-react';
+'use client';
 
-export default async function DashboardPage() {
-    const scans = await prisma.scan.findMany({
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-    });
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { LayoutDashboard, Plus, ArrowUpRight, TrendingUp, Users, Target, Calendar, BarChart3, Search, MapPin, Activity, ArrowRight, List, Zap } from 'lucide-react';
+import { Card, Button, Badge, Skeleton } from '@/components/ui';
+import { LookbackNotifier } from '@/components/dashboard/LookbackNotifier';
+
+interface Scan {
+    id: string;
+    keyword: string;
+    status: string;
+    gridSize: number;
+    radius: number;
+    frequency: string;
+    createdAt: string;
+    centerLat: number;
+    centerLng: number;
+}
+
+interface DashboardData {
+    scansCount: number;
+    recentScans: Scan[];
+}
+
+export default function DashboardPage() {
+    const [data, setData] = useState<DashboardData | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('/api/dashboard')
+            .then(res => res.json())
+            .then(setData)
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
 
     return (
-        <main className="min-h-screen p-8 max-w-7xl mx-auto">
-            <header className="flex justify-between items-center mb-12">
+        <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+            <LookbackNotifier />
+
+            {/* Header */}
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
-                    <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                        GMB Serp Tracker
-                    </h1>
-                    <p className="text-gray-400 mt-2">Local SEO Grid Rank Monitoring</p>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                            <LayoutDashboard size={20} />
+                        </div>
+                        <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Command Center</h1>
+                    </div>
+                    <p className="text-xs text-gray-500 font-bold ml-1 uppercase tracking-widest opacity-70">Spatial Performance Overview</p>
                 </div>
-                <Link
-                    href="/scans/new"
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 transition-colors px-6 py-3 rounded-xl font-semibold"
-                >
-                    <Plus size={20} />
-                    New Scan
+                <Link href="/scans/new">
+                    <Button className="h-11 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 font-black uppercase text-xs tracking-widest">
+                        <Plus className="mr-2 w-4 h-4" /> New Ranking Report
+                    </Button>
                 </Link>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-2xl">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-blue-500/10 rounded-lg text-blue-400">
-                            <Search size={24} />
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <Card className="p-6 card-hover h-full">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-500">Total Scans</p>
+                            <h3 className="text-3xl font-bold text-gray-900 mt-2">{loading ? '-' : data?.scansCount}</h3>
                         </div>
-                        <h3 className="text-xl font-semibold">Active Scans</h3>
-                    </div>
-                    <p className="text-3xl font-bold">0</p>
-                </div>
-                <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-2xl">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-emerald-500/10 rounded-lg text-emerald-400">
-                            <MapIcon size={24} />
+                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                            <Activity size={20} />
                         </div>
-                        <h3 className="text-xl font-semibold">Points Scanned</h3>
                     </div>
-                    <p className="text-3xl font-bold">0</p>
-                </div>
-                <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-2xl">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-purple-500/10 rounded-lg text-purple-400">
-                            <History size={24} />
+                    <div className="mt-4 flex items-center text-sm">
+                        <span className="text-emerald-600 font-medium flex items-center">
+                            <TrendingUp size={14} className="mr-1" /> +12%
+                        </span>
+                        <span className="text-gray-400 ml-2">vs last month</span>
+                    </div>
+                </Card>
+
+                <Card className="p-6 card-hover h-full">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-500">Avg Visibility</p>
+                            <h3 className="text-3xl font-bold text-gray-900 mt-2">42%</h3>
                         </div>
-                        <h3 className="text-xl font-semibold">Total History</h3>
+                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                            <BarChart2 size={20} />
+                        </div>
                     </div>
-                    <p className="text-3xl font-bold">{scans.length}</p>
-                </div>
+                    <div className="mt-4 flex items-center text-sm">
+                        <span className="text-emerald-600 font-medium flex items-center">
+                            <TrendingUp size={14} className="mr-1" /> +5%
+                        </span>
+                        <span className="text-gray-400 ml-2">vs last month</span>
+                    </div>
+                </Card>
+
+                <Card noPadding className="h-full bg-blue-600 text-white border-none shadow-lg shadow-blue-200 overflow-hidden relative group md:col-span-2">
+                    <div className="h-full p-6 flex flex-col justify-between relative z-10">
+                        <div className="flex items-start justify-between">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <div className="p-1 bg-white/20 rounded-md">
+                                        <Zap size={14} className="text-white fill-white" />
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-blue-100">Pro Tip</span>
+                                </div>
+                                <h3 className="text-xl font-bold text-white tracking-tight">Category Optimization</h3>
+                                <p className="text-white text-sm leading-relaxed opacity-100 max-w-[280px]">
+                                    Increase visibility by refining your <strong className="text-blue-200">GMB categories</strong> to match high-volume intent.
+                                </p>
+                            </div>
+                            <div className="bg-white/10 p-2 rounded-lg backdrop-blur-md group-hover:scale-110 transition-transform">
+                                <List className="text-white" size={20} />
+                            </div>
+                        </div>
+                        <Link href="/help" className="text-sm font-bold text-white hover:text-blue-100 flex items-center gap-1 mt-4 transition-colors">
+                            Read Strategy Guide <ArrowRight size={14} />
+                        </Link>
+                    </div>
+                    <div className="absolute -right-8 -bottom-8 opacity-10 pointer-events-none group-hover:scale-125 transition-transform duration-700">
+                        <Activity size={160} className="text-white" />
+                    </div>
+                </Card>
             </div>
 
-            <section>
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <History className="text-gray-400" size={24} />
-                    Recent Scans
-                </h2>
+            {/* Recent Scans Table */}
+            <Card noPadding className="overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
+                    <h2 className="text-lg font-bold text-gray-900">Recent Reports</h2>
+                    <Link href="/scans" className="text-sm text-blue-600 hover:text-blue-700 font-medium">View All</Link>
+                </div>
 
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-zinc-800/50 border-b border-zinc-800">
+                        <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
-                                <th className="px-6 py-4 font-semibold">Keyword</th>
-                                <th className="px-6 py-4 font-semibold">Date</th>
-                                <th className="px-6 py-4 font-semibold">Status</th>
-                                <th className="px-6 py-4 font-semibold">Actions</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Report Name / Keywords</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Location</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Frequency</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-800">
-                            {scans.map((scan) => (
-                                <tr key={scan.id} className="hover:bg-zinc-800/30 transition-colors">
-                                    <td className="px-6 py-4 font-medium">{scan.keyword}</td>
-                                    <td className="px-6 py-4 text-gray-400 text-sm">
-                                        {new Date(scan.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${scan.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400' :
-                                                scan.status === 'RUNNING' ? 'bg-blue-500/10 text-blue-400 animate-pulse' :
-                                                    'bg-zinc-800 text-zinc-400'
-                                            }`}>
-                                            {scan.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <Link
-                                            href={`/scans/${scan.id}`}
-                                            className="text-blue-400 hover:text-blue-300 font-medium"
-                                        >
-                                            View Report
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))}
-                            {scans.length === 0 && (
+                        <tbody className="divide-y divide-gray-100 bg-white">
+                            {loading ? (
+                                [1, 2, 3].map(i => (
+                                    <tr key={i}>
+                                        <td className="px-6 py-4"><Skeleton className="h-4 w-32" /></td>
+                                        <td className="px-6 py-4"><Skeleton className="h-4 w-24" /></td>
+                                        <td className="px-6 py-4"><Skeleton className="h-4 w-16" /></td>
+                                        <td className="px-6 py-4"><Skeleton className="h-4 w-20" /></td>
+                                        <td className="px-6 py-4"><Skeleton className="h-8 w-8 ml-auto" /></td>
+                                    </tr>
+                                ))
+                            ) : data?.recentScans.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                                        No scans found. Start your first local SEO audit!
+                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                                        No reports found. Start tracking now!
                                     </td>
                                 </tr>
+                            ) : (
+                                data?.recentScans.map((scan) => (
+                                    <tr key={scan.id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-500">
+                                                    <Search size={14} />
+                                                </div>
+                                                <div>
+                                                    <div className="font-semibold text-gray-900">{scan.keyword}</div>
+                                                    <div className="text-xs text-gray-500">{new Date(scan.createdAt).toLocaleDateString()}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center text-sm text-gray-600">
+                                                <MapPin size={14} className="mr-1 text-gray-400" />
+                                                {scan.centerLat.toFixed(2)}, {scan.centerLng.toFixed(2)}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded">
+                                                {scan.frequency}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Badge variant={
+                                                scan.status === 'COMPLETED' ? 'success' :
+                                                    scan.status === 'RUNNING' ? 'blue' : 'default'
+                                            }>
+                                                {scan.status}
+                                            </Badge>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <Link href={`/scans/${scan.id}`}>
+                                                <Button variant="secondary" size="sm">
+                                                    View Report
+                                                </Button>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))
                             )}
                         </tbody>
                     </table>
                 </div>
-            </section>
-        </main>
+            </Card>
+        </div>
     );
 }

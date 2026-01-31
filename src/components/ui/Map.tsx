@@ -43,6 +43,7 @@ interface MapProps {
     gridSize?: number;
     onPointClick?: (point: Point) => void;
     onPointMove?: (pointId: string, lat: number, lng: number) => void;
+    onGridMove?: (lat: number, lng: number) => void;
 }
 
 function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
@@ -149,7 +150,9 @@ export default function LeafletMap({
     selectionMode = false,
     radius = 5,
     gridSize = 3,
-    onPointClick
+    onPointClick,
+    onPointMove,
+    onGridMove
 }: MapProps) {
     return (
         <div className="h-full w-full relative z-0 bg-gray-100">
@@ -171,24 +174,36 @@ export default function LeafletMap({
                 {selectionMode && <SelectionHandler onCenterChange={onCenterChange} />}
 
                 {/* Selection Mode Visuals: Circle and Grid Preview */}
-                {selectionMode && (
+                {(selectionMode || onGridMove) && (
                     <>
                         <Circle
                             center={center}
                             radius={radius * 1000}
                             pathOptions={{ color: '#2563eb', fillColor: '#2563eb', fillOpacity: 0.1, weight: 1, dashArray: '5, 5' }}
                         />
-                        <CircleMarker
-                            center={center}
-                            radius={6}
-                            pathOptions={{ color: '#1d4ed8', fillColor: '#1d4ed8', fillOpacity: 1 }}
+                        <Marker
+                            position={center}
+                            draggable={Boolean(onGridMove)}
+                            eventHandlers={{
+                                dragend: (e) => {
+                                    const marker = e.target;
+                                    const position = marker.getLatLng();
+                                    onGridMove?.(position.lat, position.lng);
+                                    onCenterChange?.(position.lat, position.lng);
+                                },
+                            }}
                         />
                     </>
                 )}
 
                 {/* Ranking Points */}
                 {points.map((point, i) => (
-                    <RankMarker key={point.id || i} point={point} onClick={onPointClick} />
+                    <RankMarker
+                        key={point.id || i}
+                        point={point}
+                        onClick={onPointClick}
+                        onMove={onPointMove}
+                    />
                 ))}
             </MapContainer>
 
@@ -215,8 +230,10 @@ export default function LeafletMap({
                 <div className="absolute top-4 left-4 bg-white/95 backdrop-blur border border-gray-200 p-3 rounded-lg shadow-lg z-[1000] text-xs font-medium">
                     <p className="text-blue-600 font-bold">Interactive Mode</p>
                     <p className="text-gray-500 mt-1">Click map to set center location.</p>
+                    <p className="text-gray-400 text-[10px] mt-1">Drag center marker to move grid.</p>
                 </div>
             )}
         </div>
     );
 }
+

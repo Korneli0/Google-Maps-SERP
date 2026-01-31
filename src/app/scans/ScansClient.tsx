@@ -109,66 +109,92 @@ export default function ScansPage({ initialScans }: { initialScans: Scan[] }) {
                 </div>
             </Card>
 
-            {/* Data Grid View */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredScans.length === 0 ? (
-                    <div className="col-span-full py-32 flex flex-col items-center justify-center bg-white rounded-3xl border-2 border-dashed border-gray-100 text-center">
-                        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4 ring-1 ring-gray-100">
-                            <Search size={32} className="text-gray-300" />
-                        </div>
-                        <h3 className="text-lg font-black text-gray-900 uppercase tracking-tight">No Reports Found</h3>
-                        <p className="text-gray-400 mt-2 max-w-xs mx-auto text-sm font-medium leading-relaxed">
-                            Try adjusting your search query or create a new tracking report to start monitoring.
-                        </p>
-                    </div>
-                ) : (
-                    filteredScans.map((scan) => (
-                        <Card key={scan.id} noPadding className="group overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ring-1 ring-gray-200 hover:ring-blue-500/30">
-                            <Link href={`/scans/${scan.id}`} className="block h-full">
-                                <div className="p-6 h-full flex flex-col">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <Badge variant={
-                                            scan.status === 'COMPLETED' ? 'success' :
-                                                scan.status === 'RUNNING' ? 'blue' :
-                                                    'default'
-                                        } className="font-black text-[10px] uppercase tracking-widest px-2.5 py-0.5 shadow-sm">
-                                            {scan.status}
-                                        </Badge>
-                                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover:bg-blue-50 group-hover:text-blue-500 transition-all shadow-inner">
-                                            <ChevronRight size={16} />
-                                        </div>
-                                    </div>
-
-                                    <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight line-clamp-2">
-                                        {scan.keyword}
-                                    </h3>
-
-                                    <div className="space-y-3 mt-auto border-t border-gray-50 pt-4">
-                                        <div className="flex items-center text-xs text-gray-500 font-medium">
-                                            <Calendar size={12} className="mr-2 text-blue-500" />
-                                            {new Date(scan.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                        </div>
-                                        <div className="flex items-center text-xs text-gray-500 font-medium">
-                                            <MapPin size={12} className="mr-2 text-blue-500" />
-                                            <span className="truncate">{scan.centerLat.toFixed(4)}, {scan.centerLng.toFixed(4)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-4 text-xs">
-                                            <div className="flex items-center text-gray-700 font-bold bg-gray-100 px-2 py-1 rounded-md">
-                                                <Grid size={12} className="mr-1.5 opacity-50" />
-                                                {scan.gridSize}x{scan.gridSize}
+            {/* Data Table View */}
+            <Card noPadding className="overflow-hidden border-none shadow-xl ring-1 ring-gray-200">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Keyword / Target</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Configuration</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Location Info</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                            {filteredScans.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-32 text-center">
+                                        <div className="flex flex-col items-center justify-center">
+                                            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 ring-1 ring-gray-100">
+                                                <Search size={24} className="text-gray-300" />
                                             </div>
-                                            <div className="flex items-center text-gray-700 font-bold bg-gray-100 px-2 py-1 rounded-md">
-                                                <BarChart3 size={12} className="mr-1.5 opacity-50" />
-                                                {scan.radius}km
-                                            </div>
+                                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-tight">No Reports Found</h3>
+                                            <p className="text-gray-400 mt-1 text-xs font-medium">Try adjusting your search query.</p>
                                         </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        </Card>
-                    ))
-                )}
-            </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredScans.map((scan) => (
+                                    <tr key={scan.id} className="group hover:bg-blue-50/30 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <Badge variant={
+                                                scan.status === 'COMPLETED' ? 'success' :
+                                                    scan.status === 'RUNNING' ? 'blue' :
+                                                        'default'
+                                            } className="font-black text-[9px] uppercase tracking-widest px-2 py-0.5">
+                                                {scan.status}
+                                            </Badge>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Link href={`/scans/${scan.id}`} className="block group/link">
+                                                <div className="font-bold text-gray-900 group-hover/link:text-blue-600 transition-colors line-clamp-1">
+                                                    {scan.keyword}
+                                                </div>
+                                                <div className="text-[10px] text-gray-400 font-medium mt-0.5">
+                                                    Created {new Date(scan.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                </div>
+                                            </Link>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex items-center text-[11px] text-gray-700 font-bold bg-gray-100 px-2 py-1 rounded-md">
+                                                    <Grid size={11} className="mr-1.5 opacity-50" />
+                                                    {scan.gridSize}x{scan.gridSize}
+                                                </div>
+                                                <div className="flex items-center text-[11px] text-gray-700 font-bold bg-gray-100 px-2 py-1 rounded-md">
+                                                    <BarChart3 size={11} className="mr-1.5 opacity-50" />
+                                                    {scan.radius}km
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center text-xs text-gray-500 font-medium">
+                                                <MapPin size={12} className="mr-2 text-blue-500 shrink-0" />
+                                                <span className="truncate max-w-[150px]">{scan.centerLat.toFixed(4)}, {scan.centerLng.toFixed(4)}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <Link href={`/scans/${scan.id}`}>
+                                                    <Button variant="ghost" size="sm" className="h-8 px-3 text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 hover:text-blue-600">
+                                                        View Results
+                                                    </Button>
+                                                </Link>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-600 hover:bg-red-50">
+                                                    <Trash2 size={14} />
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
+
         </div>
     );
 }

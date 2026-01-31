@@ -19,66 +19,97 @@ export default async function ReportsPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {reports.length === 0 ? (
-                    <div className="col-span-3 py-16 text-center text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                        <FileText size={48} className="mx-auto mb-4 opacity-20" />
-                        <h3 className="text-lg font-medium text-gray-900">No reports generated yet</h3>
-                        <p className="text-sm mt-1 mb-6">Completed scans will appear here for download.</p>
-                        <Link href="/scans/new">
-                            <Button>Start New Scan</Button>
-                        </Link>
-                    </div>
-                ) : (
-                    reports.map(report => {
-                        const completedPoints = report.results.length;
-                        const top3Count = report.results.filter(r => r.rank && r.rank <= 3).length;
-                        const visibility = completedPoints > 0 ? Math.round((top3Count / completedPoints) * 100) : 0;
+            <Card noPadding className="overflow-hidden border-none shadow-xl ring-1 ring-gray-200">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Keyword</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Scan Date</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Config</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Visibility</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                            {reports.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-32 text-center">
+                                        <div className="flex flex-col items-center justify-center">
+                                            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 ring-1 ring-gray-100">
+                                                <FileText size={24} className="text-gray-300" />
+                                            </div>
+                                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-tight">No Reports Found</h3>
+                                            <p className="text-gray-400 mt-1 text-xs font-medium">Completed scans will appear here.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                reports.map(report => {
+                                    const completedPoints = report.results.length;
+                                    const top3Count = report.results.filter(r => r.rank && r.rank <= 3).length;
+                                    const visibility = completedPoints > 0 ? Math.round((top3Count / completedPoints) * 100) : 0;
 
-                        return (
-                            <Card key={report.id} className="flex flex-col h-full hover:shadow-md transition-shadow">
-                                <div className="p-6 flex-1">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                            <FileText size={20} />
-                                        </div>
-                                        <Badge variant="success">Ready</Badge>
-                                    </div>
+                                    return (
+                                        <tr key={report.id} className="group hover:bg-blue-50/30 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <Link href={`/scans/${report.id}`} className="block group/link">
+                                                    <div className="font-bold text-gray-900 group-hover/link:text-blue-600 transition-colors">
+                                                        {report.keyword}
+                                                    </div>
+                                                    <div className="text-[10px] text-gray-400 font-medium mt-0.5 flex items-center gap-1">
+                                                        <MapPin size={10} />
+                                                        {report.centerLat.toFixed(3)}, {report.centerLng.toFixed(3)}
+                                                    </div>
+                                                </Link>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-xs text-gray-600 font-medium">
+                                                    {new Date(report.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center justify-center">
+                                                    <Badge variant="outline" className="font-bold text-[10px] border-gray-100">
+                                                        {report.gridSize}x{report.gridSize} Grid
+                                                    </Badge>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex justify-between items-center w-24">
+                                                        <span className="text-[10px] font-black text-emerald-600">{visibility}%</span>
+                                                        <span className="text-[9px] text-gray-400 uppercase font-bold">Visibility</span>
+                                                    </div>
+                                                    <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                                                            style={{ width: `${visibility}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <Link href={`/scans/${report.id}`}>
+                                                        <Button variant="ghost" size="sm" className="h-8 px-3 text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 hover:text-blue-600">
+                                                            View Report
+                                                        </Button>
+                                                    </Link>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-blue-600 hover:bg-blue-50">
+                                                        <Download size={14} />
+                                                    </Button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
 
-                                    <h3 className="text-lg font-bold text-gray-900 mb-1">{report.keyword}</h3>
-                                    <p className="text-sm text-gray-500 flex items-center gap-1 mb-4">
-                                        <MapPin size={12} />
-                                        {report.centerLat.toFixed(3)}, {report.centerLng.toFixed(3)}
-                                    </p>
-
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Scan Date</span>
-                                            <span className="font-medium">{new Date(report.createdAt).toLocaleDateString()}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Grid Size</span>
-                                            <span className="font-medium">{report.gridSize}x{report.gridSize}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Visibility Score</span>
-                                            <span className="font-bold text-emerald-600">{visibility}%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-3">
-                                    <Link href={`/scans/${report.id}`} className="flex-1">
-                                        <Button variant="outline" className="w-full">View</Button>
-                                    </Link>
-                                    <Button variant="ghost" size="icon" title="Download CSV">
-                                        <Download size={18} className="text-gray-500" />
-                                    </Button>
-                                </div>
-                            </Card>
-                        );
-                    })
-                )}
-            </div>
         </div>
     );
 }

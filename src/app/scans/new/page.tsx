@@ -17,9 +17,17 @@ import {
     Target,
     Clock,
     Navigation,
-    Store
+    Store,
+    Maximize2
 } from 'lucide-react';
 import { Card, Button, Input, Select, Badge } from '@/components/ui';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/Dialog';
 
 // Dynamically import Map to avoid SSR issues
 const LeafletMap = dynamic(() => import('@/components/ui/Map'), {
@@ -233,14 +241,44 @@ export default function NewScanPage() {
                                     </div>
 
                                     {/* Map Preview */}
-                                    <div className="h-[240px] rounded-lg overflow-hidden border border-gray-200 relative">
+                                    <div className="h-[240px] rounded-lg overflow-hidden border border-gray-200 relative group">
                                         <LeafletMap
                                             center={[formData.centerLat, formData.centerLng]}
                                             zoom={13}
                                             selectionMode={true}
                                             onCenterChange={(lat, lng) => setFormData(prev => ({ ...prev, centerLat: lat, centerLng: lng }))}
+                                            onGridMove={(lat, lng) => setFormData(prev => ({ ...prev, centerLat: lat, centerLng: lng }))}
                                             radius={formData.radius}
                                         />
+                                        <div className="absolute top-2 right-2 z-[1000] opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="secondary" size="sm" className="bg-white/90 backdrop-blur shadow-sm border-gray-200">
+                                                        <Maximize2 size={14} className="mr-1" /> Maximize
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-[90vw] w-[1200px] h-[80vh] p-0 overflow-hidden border-none shadow-2xl">
+                                                    <div className="flex flex-col h-full">
+                                                        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white">
+                                                            <div>
+                                                                <h3 className="font-bold text-gray-900">Precision Location Editor</h3>
+                                                                <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">Set Grid Center Point</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex-1 bg-gray-50">
+                                                            <LeafletMap
+                                                                center={[formData.centerLat, formData.centerLng]}
+                                                                zoom={15}
+                                                                selectionMode={true}
+                                                                onCenterChange={(lat, lng) => setFormData(prev => ({ ...prev, centerLat: lat, centerLng: lng }))}
+                                                                onGridMove={(lat, lng) => setFormData(prev => ({ ...prev, centerLat: lat, centerLng: lng }))}
+                                                                radius={formData.radius}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -300,7 +338,7 @@ export default function NewScanPage() {
                                         </div>
                                     </div>
 
-                                    <div className="h-[300px] rounded-lg overflow-hidden border border-gray-200 relative">
+                                    <div className="h-[300px] rounded-lg overflow-hidden border border-gray-200 relative group">
                                         <LeafletMap
                                             center={[formData.centerLat, formData.centerLng]}
                                             zoom={12}
@@ -309,7 +347,39 @@ export default function NewScanPage() {
                                             gridSize={formData.gridSize}
                                             points={(customPoints || []).map(p => ({ ...p, rank: null, hasData: true, draggable: true }))}
                                             onPointMove={handlePointMove}
+                                            onGridMove={(lat, lng) => setFormData(prev => ({ ...prev, centerLat: lat, centerLng: lng }))}
                                         />
+                                        <div className="absolute top-2 right-2 z-[1000] opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="secondary" size="sm" className="bg-white/90 backdrop-blur shadow-sm border-gray-200">
+                                                        <Maximize2 size={14} className="mr-1" /> Edit Grid
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-[90vw] w-[1200px] h-[80vh] p-0 overflow-hidden border-none shadow-2xl">
+                                                    <div className="flex flex-col h-full">
+                                                        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white">
+                                                            <div>
+                                                                <h3 className="font-bold text-gray-900">Spatial Geometry Editor</h3>
+                                                                <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">Adjust Individual Pins or Move Whole Grid</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex-1 bg-gray-50">
+                                                            <LeafletMap
+                                                                center={[formData.centerLat, formData.centerLng]}
+                                                                zoom={14}
+                                                                selectionMode={false}
+                                                                radius={formData.radius}
+                                                                gridSize={formData.gridSize}
+                                                                points={(customPoints || []).map(p => ({ ...p, rank: null, hasData: true, draggable: true }))}
+                                                                onPointMove={handlePointMove}
+                                                                onGridMove={(lat, lng) => setFormData(prev => ({ ...prev, centerLat: lat, centerLng: lng }))}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
                                         {/* We need an effect to sync initial points if customPoints is empty */}
                                         <PointInitializer formData={formData} onPointsGenerated={setCustomPoints} customPoints={customPoints} />
                                     </div>

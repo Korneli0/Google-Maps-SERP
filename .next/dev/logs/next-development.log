@@ -6761,3 +6761,124 @@ Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
 [02:29:17.917] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:16.046] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /scans/new. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:16.047] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans/new. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:19.241] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[02:38:19.254] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:19.254] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:19.266] Server  ERROR   ⨯ ReferenceError: BarChart2 is not defined
+[02:38:19.269] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:19.269] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:19.278] Server  LOG     ✓ Compiled in 53ms
+[02:38:20.273] Browser ERROR   uncaughtError: ReferenceError: BarChart2 is not defined
+[02:38:46.574] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[02:38:46.584] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:46.584] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:46.595] Server  ERROR   ⨯ ReferenceError: BarChart2 is not defined
+[02:38:46.600] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:46.600] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:38:46.609] Server  LOG     ✓ Compiled in 15ms
+[02:38:47.270] Browser ERROR   uncaughtError: ReferenceError: BarChart2 is not defined
+[02:39:04.393] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[02:39:04.410] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:04.411] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:04.428] Server  ERROR   ⨯ ReferenceError: BarChart2 is not defined
+[02:39:04.433] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:04.433] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:04.537] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /scans/new. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:04.537] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans/new. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:04.540] Server  LOG     ✓ Compiled in 127ms
+[02:39:05.271] Browser ERROR   uncaughtError: ReferenceError: BarChart2 is not defined
+[02:39:24.852] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /schedules. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:24.852] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /schedules. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:25.233] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[02:39:25.244] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:25.244] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:25.252] Server  ERROR   ⨯ ReferenceError: BarChart2 is not defined
+[02:39:25.255] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:25.255] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:25.291] Server  LOG     ✓ Compiled in 25ms
+[02:39:26.083] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:26.083] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:26.270] Browser ERROR   uncaughtError: ReferenceError: BarChart2 is not defined
+[02:39:27.703] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:27.703] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:27.759] Server  ERROR   Proxies GET error: TypeError: Cannot read properties of undefined (reading 'findMany')
+[02:39:27.783] Server  ERROR   Proxies GET error: TypeError: Cannot read properties of undefined (reading 'findMany')
+[02:39:28.992] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:28.992] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:29.743] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:29.743] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:29.800] Server  ERROR   Proxies GET error: TypeError: Cannot read properties of undefined (reading 'findMany')
+[02:39:29.827] Server  ERROR   Proxies GET error: TypeError: Cannot read properties of undefined (reading 'findMany')
+[02:39:42.640] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:42.640] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:44.207] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /schedules. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:44.207] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /schedules. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.446] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /schedules. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.446] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /schedules. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.452] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.452] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.462] Server  ERROR   ⨯ ReferenceError: BarChart2 is not defined
+[02:39:45.466] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.466] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.479] Server  LOG     ✓ Compiled in 18ms
+[02:39:45.860] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:45.860] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:46.271] Browser ERROR   uncaughtError: ReferenceError: BarChart2 is not defined
+[02:39:50.580] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:50.580] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:55.658] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:55.658] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /settings. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:55.717] Server  ERROR   Proxies GET error: TypeError: Cannot read properties of undefined (reading 'findMany')
+[02:39:55.744] Server  ERROR   Proxies GET error: TypeError: Cannot read properties of undefined (reading 'findMany')
+[02:39:56.756] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[02:39:56.756] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reports. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport

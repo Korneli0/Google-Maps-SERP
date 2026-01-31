@@ -12,12 +12,17 @@ export default async function ReportsPage() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Reports Library</h1>
-                    <p className="text-gray-500 mt-1">Access and download your historical ranking reports.</p>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                            <FileText size={20} />
+                        </div>
+                        <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Reports Library</h1>
+                    </div>
+                    <p className="text-xs text-gray-500 font-bold ml-1 uppercase tracking-widest opacity-70">Historical Ranking Intelligence</p>
                 </div>
-            </div>
+            </header>
 
             <Card noPadding className="overflow-hidden border-none shadow-xl ring-1 ring-gray-200">
                 <div className="overflow-x-auto">

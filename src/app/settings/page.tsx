@@ -22,7 +22,34 @@ export default function SettingsPage() {
         const savedName = localStorage.getItem('gmbserp_user_name');
         if (savedName) setName(savedName);
         fetchProxies();
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const res = await fetch('/api/settings');
+            const data = await res.json();
+            if (data.settings) {
+                if (data.settings.useSystemProxy !== undefined) {
+                    setUseSystemProxy(data.settings.useSystemProxy === 'true');
+                }
+            }
+        } catch (err) {
+            console.error('Failed to fetch settings:', err);
+        }
+    };
+
+    const persistSetting = async (key: string, value: string) => {
+        try {
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key, value }),
+            });
+        } catch (err) {
+            console.error('Failed to persist setting:', err);
+        }
+    };
 
     const fetchProxies = async () => {
         try {
@@ -37,36 +64,64 @@ export default function SettingsPage() {
     const handleFetchPublic = async () => {
         setLoadingProxies(true);
         setShowLogs(true);
-        setFetchLogs(['[INIT] Connecting to global proxy repositories...', '[QUERY] github.com/TheSpeedX/PROXY-List', '[QUERY] github.com/ShiftyTR/Proxy-List']);
+        setFetchLogs(['[INIT] Connecting to global proxy repositories...']);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 1 min total timeout
 
         try {
-            const res = await fetch('/api/proxies/fetch', { method: 'POST' });
+            const res = await fetch('/api/proxies/fetch', {
+                method: 'POST',
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                setFetchLogs(prev => [...prev, `[ERROR] Server returned ${res.status}: ${errorData.details || errorData.error || 'Unknown error'}`]);
+                return;
+            }
+
             const data = await res.json();
             if (data.success) {
-                setFetchLogs(prev => [...prev, ...data.logs.map((l: string) => `[SUCCESS] ${l}`), `[FINAL] Imported ${data.count} new routing coordinates.`]);
-                setTimeout(fetchProxies, 1000); // Small delay to ensure DB commit
+                setFetchLogs(prev => [...prev, ...data.logs.map((l: string) => `[SUCCESS] ${l}`), `[FINAL] Sync complete.`]);
+                setTimeout(fetchProxies, 1000);
+            } else {
+                setFetchLogs(prev => [...prev, `[ERROR] ${data.error || 'Operation failed'}`]);
             }
-        } catch (err) {
-            setFetchLogs(prev => [...prev, '[ERROR] Failed to fetch public proxies. External sources unreachable.']);
+        } catch (err: any) {
+            const msg = err.name === 'AbortError' ? 'Synchronization timed out' : err.message;
+            setFetchLogs(prev => [...prev, `[ERROR] Connection failed: ${msg}`]);
         } finally {
             setLoadingProxies(false);
+            clearTimeout(timeoutId);
         }
     };
 
     const handleAddProxy = async () => {
+        if (!newProxy.host || !newProxy.port) {
+            alert('Host and Port are required');
+            return;
+        }
+
         try {
             const res = await fetch('/api/proxies', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newProxy),
             });
+
             if (res.ok) {
                 fetchProxies();
                 setShowAddProxy(false);
                 setNewProxy({ host: '', port: '', username: '', password: '', type: 'RESIDENTIAL' });
+            } else {
+                const data = await res.json();
+                alert(`${data.error || 'Failed to add proxy'}${data.details ? `: ${data.details}` : ''}`);
             }
         } catch (err) {
             console.error('Failed to add proxy:', err);
+            alert('Network error while adding proxy');
         }
     };
 
@@ -89,6 +144,18 @@ export default function SettingsPage() {
             fetchProxies();
         } catch (err) {
             console.error('Failed to toggle proxy:', err);
+        }
+    };
+
+    const handlePurgePool = async () => {
+        if (!confirm('Are you sure you want to purge the entire routing pool? This cannot be undone.')) return;
+        try {
+            await fetch('/api/proxies?id=all', { method: 'DELETE' });
+            fetchProxies();
+            setFetchLogs(['[WARN] Routing pool purged by operator.']);
+            setShowLogs(true);
+        } catch (err) {
+            console.error('Failed to purge pool:', err);
         }
     };
 
@@ -118,7 +185,7 @@ export default function SettingsPage() {
     };
 
     return (
-        <div className="p-8 max-w-6xl mx-auto min-h-screen bg-gray-50 text-gray-900">
+        <div className="max-w-7xl mx-auto space-y-8 min-h-screen bg-gray-50 text-gray-900">
             <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
@@ -228,6 +295,10 @@ export default function SettingsPage() {
                                     <Button onClick={() => setShowAddProxy(!showAddProxy)} variant="outline" className="border-gray-200 font-black uppercase text-[10px] tracking-widest h-11 bg-white">
                                         Manual Entry
                                     </Button>
+                                    <Button onClick={handlePurgePool} variant="outline" className="border-rose-100 text-rose-500 hover:bg-rose-50 font-black uppercase text-[10px] tracking-widest h-11 bg-white">
+                                        <Trash2 size={16} className="mr-2" />
+                                        Clear Pool
+                                    </Button>
                                 </div>
                             </div>
 
@@ -261,7 +332,7 @@ export default function SettingsPage() {
                             {showAddProxy && (
                                 <div className="mb-8 p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 space-y-4">
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div className="col-span-2">
+                                        <div className="col-span-2 md:col-span-1">
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Host / IP</label>
                                             <Input placeholder="192.168.1.1" value={newProxy.host} onChange={e => setNewProxy({ ...newProxy, host: e.target.value })} className="font-bold border-gray-200" />
                                         </div>
@@ -270,16 +341,26 @@ export default function SettingsPage() {
                                             <Input placeholder="8080" value={newProxy.port} onChange={e => setNewProxy({ ...newProxy, port: e.target.value })} className="font-bold border-gray-200" />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Type</label>
-                                            <select className="w-full h-10 border border-gray-200 rounded-md bg-white font-bold text-xs" value={newProxy.type} onChange={e => setNewProxy({ ...newProxy, type: e.target.value })}>
-                                                <option value="RESIDENTIAL">RESIDENTIAL</option>
-                                                <option value="DATACENTER">DATACENTER</option>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Username (Optional)</label>
+                                            <Input placeholder="user123" value={newProxy.username} onChange={e => setNewProxy({ ...newProxy, username: e.target.value })} className="font-bold border-gray-200" />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Password (Optional)</label>
+                                            <Input type="password" placeholder="••••••••" value={newProxy.password} onChange={e => setNewProxy({ ...newProxy, password: e.target.value })} className="font-bold border-gray-200" />
+                                        </div>
+                                        <div className="col-span-2">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Proxy Type</label>
+                                            <select className="w-full h-10 px-3 border border-gray-200 rounded-md bg-white font-bold text-xs focus:ring-2 focus:ring-blue-500 transition-all" value={newProxy.type} onChange={e => setNewProxy({ ...newProxy, type: e.target.value })}>
+                                                <option value="RESIDENTIAL">RESIDENTIAL (Rank Improvement Optimizer)</option>
+                                                <option value="DATACENTER">DATACENTER (Standard Search Routing)</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="flex justify-end gap-2">
-                                        <Button variant="ghost" className="font-bold" onClick={() => setShowAddProxy(false)}>Cancel</Button>
-                                        <Button onClick={handleAddProxy} className="bg-blue-600 text-white font-black uppercase text-xs tracking-widest px-6 shadow-lg shadow-blue-500/20">Add Coordinate</Button>
+                                    <div className="flex justify-end gap-2 pt-2">
+                                        <Button variant="ghost" className="font-bold text-gray-400 hover:text-gray-900" onClick={() => setShowAddProxy(false)}>Discard</Button>
+                                        <Button onClick={handleAddProxy} className="bg-blue-600 text-white font-black uppercase text-xs tracking-widest px-8 shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                            Add Coordinate Pair
+                                        </Button>
                                     </div>
                                 </div>
                             )}
@@ -291,7 +372,11 @@ export default function SettingsPage() {
                                         <div className="flex items-center gap-2">
                                             <span className="text-[10px] font-black text-gray-400 uppercase">Direct System Connection</span>
                                             <button
-                                                onClick={() => setUseSystemProxy(!useSystemProxy)}
+                                                onClick={() => {
+                                                    const newValue = !useSystemProxy;
+                                                    setUseSystemProxy(newValue);
+                                                    persistSetting('useSystemProxy', String(newValue));
+                                                }}
                                                 className={`w-10 h-5 rounded-full relative transition-all ${useSystemProxy ? 'bg-emerald-500' : 'bg-gray-200'}`}
                                             >
                                                 <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${useSystemProxy ? 'right-1' : 'left-1'}`} />

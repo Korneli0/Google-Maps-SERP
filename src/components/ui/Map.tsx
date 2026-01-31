@@ -142,6 +142,18 @@ const RankMarker = ({
     );
 };
 
+function MapResizer() {
+    const map = useMap();
+    useEffect(() => {
+        // Delay slightly to allow modal animations to finish
+        const timer = setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+        return () => clearTimeout(timer);
+    }, [map]);
+    return null;
+}
+
 export default function LeafletMap({
     center,
     zoom,
@@ -164,6 +176,7 @@ export default function LeafletMap({
                 zoomControl={false}
             >
                 <ZoomControl position="bottomright" />
+                <MapResizer />
 
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'

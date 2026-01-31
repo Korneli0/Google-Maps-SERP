@@ -91,10 +91,39 @@ async function GET() {
 async function POST(req) {
     try {
         const data = await req.json();
+        if (!data.host || !data.port) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: 'Host and Port are required'
+            }, {
+                status: 400
+            });
+        }
+        const port = parseInt(data.port);
+        if (isNaN(port)) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: 'Invalid port number'
+            }, {
+                status: 400
+            });
+        }
+        // Check for duplicates
+        const existing = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.findFirst({
+            where: {
+                host: data.host,
+                port: port
+            }
+        });
+        if (existing) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: 'Proxy already exists in pool'
+            }, {
+                status: 409
+            });
+        }
         const proxy = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.create({
             data: {
                 host: data.host,
-                port: parseInt(data.port),
+                port: port,
                 username: data.username || null,
                 password: data.password || null,
                 type: data.type || 'RESIDENTIAL',
@@ -103,9 +132,15 @@ async function POST(req) {
         });
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(proxy);
     } catch (error) {
-        console.error('Proxy creation error:', error);
+        console.error('Proxy creation error details:', {
+            message: error.message,
+            code: error.code,
+            meta: error.meta,
+            stack: error.stack
+        });
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            error: 'Failed to create proxy'
+            error: 'Failed to create proxy',
+            details: error.message
         }, {
             status: 500
         });
@@ -137,6 +172,13 @@ async function DELETE(req) {
     try {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');
+        if (id === 'all') {
+            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.deleteMany({});
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: true,
+                message: 'Proxy pool purged'
+            });
+        }
         if (!id) throw new Error('Proxy ID required');
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.delete({
             where: {

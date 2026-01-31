@@ -337,22 +337,35 @@ async function runScan(scanId) {
         }
     });
     const points = scan.customPoints ? JSON.parse(scan.customPoints) : (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$grid$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateGrid"])(scan.centerLat, scan.centerLng, scan.radius, scan.gridSize, scan.shape);
-    // Fetch enabled proxies
-    const enabledProxies = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.findMany({
-        where: {
-            enabled: true
-        }
-    });
+    // Fetch enabled proxies and global settings
+    const [enabledProxies, proxySetting] = await Promise.all([
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.findMany({
+            where: {
+                enabled: true
+            }
+        }),
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].globalSetting.findUnique({
+            where: {
+                key: 'useSystemProxy'
+            }
+        })
+    ]);
+    const useSystemProxy = proxySetting ? proxySetting.value === 'true' : true;
     const launchOptions = {
         headless: true
     };
-    if (enabledProxies.length > 0) {
-        const p = enabledProxies[0];
+    // If not using system proxy and we have proxies in the pool
+    if (!useSystemProxy && enabledProxies.length > 0) {
+        // Simple random proxy selection for load balancing
+        const p = enabledProxies[Math.floor(Math.random() * enabledProxies.length)];
         launchOptions.proxy = {
             server: `${p.host}:${p.port}`,
             username: p.username || undefined,
             password: p.password || undefined
         };
+        console.log(`[Scanner] Using proxy routing: ${p.host}:${p.port}`);
+    } else {
+        console.log(`[Scanner] Using Direct System Connection (no proxy)`);
     }
     const browser = await __TURBOPACK__imported__module__$5b$externals$5d2f$playwright__$5b$external$5d$__$28$playwright$2c$__esm_import$2c$__$5b$project$5d2f$node_modules$2f$playwright$29$__["chromium"].launch(launchOptions);
     const context = await browser.newContext({

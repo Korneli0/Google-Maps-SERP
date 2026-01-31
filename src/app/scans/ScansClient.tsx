@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { exportAllScansToXLSX } from '@/lib/export';
 import { Search, ChevronRight, Filter, Download, Plus, Calendar, MapPin, Grid, BarChart3, MoreVertical, Trash2 } from 'lucide-react';
 import { Button, Badge, Card, Input, Select } from '@/components/ui';
 
@@ -51,7 +52,11 @@ export default function ScansPage({ initialScans }: { initialScans: Scan[] }) {
                     <p className="text-xs text-gray-500 font-bold ml-1 uppercase tracking-widest opacity-70">Spatial Intelligence Grid Network</p>
                 </div>
                 <div className="flex gap-3">
-                    <Button variant="outline" className="h-11 px-5 border-gray-200 hover:bg-gray-50 hover:text-blue-600 transition-all font-bold">
+                    <Button
+                        variant="outline"
+                        onClick={() => exportAllScansToXLSX(filteredScans)}
+                        className="h-11 px-5 border-gray-200 hover:bg-gray-50 hover:text-blue-600 transition-all font-bold"
+                    >
                         <Download className="mr-2 w-4 h-4" /> Export All
                     </Button>
                     <Link href="/scans/new">

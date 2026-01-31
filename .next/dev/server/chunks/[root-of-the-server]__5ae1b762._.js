@@ -61,11 +61,18 @@ __turbopack_context__.s([
     "generateGrid",
     ()=>generateGrid
 ]);
-function generateGrid(centerLat, centerLng, radiusKm, gridSize) {
+function generateGrid(centerLat, centerLng, radiusKm, gridSize, shape = 'SQUARE') {
+    if (shape === 'CIRCLE') {
+        return generateCircleGrid(centerLat, centerLng, radiusKm, gridSize);
+    }
+    if (shape === 'ZIP') {
+        return generateZipGrid(centerLat, centerLng, radiusKm, gridSize);
+    }
+    if (shape === 'SMART') {
+        return generateSmartGrid(centerLat, centerLng, radiusKm);
+    }
     const points = [];
-    // 1 degree of latitude is ~111.111 km
     const latDelta = radiusKm / 111.111;
-    // 1 degree of longitude is ~111.111 * cos(lat) km
     const lngDelta = radiusKm / (111.111 * Math.cos(centerLat * (Math.PI / 180)));
     const startLat = centerLat - latDelta;
     const startLng = centerLng - lngDelta;
@@ -75,10 +82,127 @@ function generateGrid(centerLat, centerLng, radiusKm, gridSize) {
         for(let j = 0; j < gridSize; j++){
             points.push({
                 lat: startLat + i * latStep,
-                lng: startLng + j * lngStep
+                lng: startLng + j * lngStep,
+                id: `sq-${i}-${j}`
             });
         }
     }
+    return points;
+}
+function generateCircleGrid(centerLat, centerLng, radiusKm, gridSize) {
+    const points = [];
+    points.push({
+        lat: centerLat,
+        lng: centerLng,
+        id: 'center'
+    }); // Always include center
+    const rings = Math.floor(gridSize / 2);
+    if (rings < 1) return points;
+    for(let r = 1; r <= rings; r++){
+        const ringRadius = radiusKm * r / rings;
+        const numPoints = r * 6; // Hexagonal-ish distribution
+        for(let i = 0; i < numPoints; i++){
+            const angle = i * 360 / numPoints;
+            const bearing = angle * (Math.PI / 180);
+            // Haversine-ish approximate offset
+            const latOffset = ringRadius / 111.111 * Math.cos(bearing);
+            const lngOffset = ringRadius / (111.111 * Math.cos(centerLat * (Math.PI / 180))) * Math.sin(bearing);
+            points.push({
+                lat: centerLat + latOffset,
+                lng: centerLng + lngOffset,
+                id: `circle-${r}-${i}`
+            });
+        }
+    }
+    return points;
+}
+function generateZipGrid(centerLat, centerLng, radiusKm, gridSize) {
+    const points = [];
+    // For Zip mode, we cluster pins semi-randomly but concentrated in sub-sectors
+    // In a real app, this would query a zip-code boundary API
+    const sectors = 4;
+    const pointsPerSector = Math.ceil(gridSize * gridSize / sectors);
+    for(let s = 0; s < sectors; s++){
+        const sectorAngle = s * 360 / sectors;
+        const bearing = sectorAngle * (Math.PI / 180);
+        // Sector center
+        const sLat = centerLat + radiusKm * 0.6 / 111.111 * Math.cos(bearing);
+        const sLng = centerLng + radiusKm * 0.6 / (111.111 * Math.cos(centerLat * (Math.PI / 180))) * Math.sin(bearing);
+        for(let i = 0; i < pointsPerSector; i++){
+            const jitter = 0.2 * radiusKm;
+            const jLat = (Math.random() - 0.5) * jitter / 111.111;
+            const jLng = (Math.random() - 0.5) * jitter / (111.111 * Math.cos(sLat * (Math.PI / 180)));
+            points.push({
+                lat: sLat + jLat,
+                lng: sLng + jLng,
+                id: `zip-${s}-${i}`
+            });
+        }
+    }
+    return points;
+}
+function generateSmartGrid(centerLat, centerLng, radiusKm) {
+    const points = [];
+    const R = 6371; // Earth's radius in km
+    // Smart grid focused on center
+    points.push({
+        lat: centerLat,
+        lng: centerLng,
+        id: 'smart-center'
+    });
+    // Ring configuration: [distanceFromCenterInKm, pointSpacingInKm]
+    // We scale this based on the total radius requested
+    const ringConfigs = [
+        {
+            dist: 0.15,
+            spacing: 0.3
+        },
+        {
+            dist: 0.4,
+            spacing: 0.5
+        },
+        {
+            dist: 0.8,
+            spacing: 0.8
+        },
+        {
+            dist: 1.5,
+            spacing: 1.2
+        },
+        {
+            dist: 3.0,
+            spacing: 2.0
+        },
+        {
+            dist: 6.0,
+            spacing: 4.0
+        },
+        {
+            dist: 12.0,
+            spacing: 8.0
+        }
+    ];
+    ringConfigs.forEach((ring, ringIdx)=>{
+        // Adjust ring distance relative to the requested radius
+        // If radius is 3km, we don't want points at 12km
+        if (ring.dist * (radiusKm / 3) > radiusKm && ringIdx > 1) return;
+        const actualDist = ring.dist * (radiusKm / 3);
+        const actualSpacing = ring.spacing * (radiusKm / 3);
+        const circumference = 2 * Math.PI * actualDist;
+        const numPoints = Math.max(3, Math.floor(circumference / actualSpacing));
+        const angleStep = 2 * Math.PI / numPoints;
+        for(let i = 0; i < numPoints; i++){
+            const angle = angleStep * i;
+            // Haversine approximation for small distances
+            const latOffset = actualDist / 111.111 * Math.cos(angle);
+            const lngOffset = actualDist / (111.111 * Math.cos(centerLat * (Math.PI / 180))) * Math.sin(angle);
+            points.push({
+                lat: centerLat + latOffset,
+                lng: centerLng + lngOffset,
+                id: `smart-${ringIdx}-${i}`
+            });
+        }
+    });
     return points;
 }
 }),
@@ -135,6 +259,7 @@ async function scrapeGMB(page, keyword, lat, lng) {
                 if (ariaLabel && !ariaLabel.includes('stars') && ariaLabel.length > 2) {
                     name = ariaLabel;
                 }
+                // Strategy B: Specific class signatures
                 if (!name) {
                     const nameEl = item.querySelector('.fontHeadlineSmall, .qBF1Pd, [role="heading"]');
                     name = nameEl?.textContent?.trim() || '';
@@ -143,18 +268,25 @@ async function scrapeGMB(page, keyword, lat, lng) {
                 name = name.split(' · ')[0].replace(/\. \d+$/, '').trim();
                 if (seenNames.has(name.toLowerCase())) return;
                 seenNames.add(name.toLowerCase());
+                // URL/Link Extraction
+                const linkEl = item.querySelector('a[href*="/maps/place/"]') || item.closest('a[href*="/maps/place/"]');
+                const url = linkEl ? linkEl.href : '';
+                // Rating & Reviews extraction
                 const ratingEl = item.querySelector('[role="img"][aria-label*="stars"]');
                 const ratingLabel = ratingEl?.getAttribute('aria-label') || '';
                 const ratingMatch = ratingLabel.match(/([0-9.]+)\s+stars/);
                 const rating = ratingMatch ? parseFloat(ratingMatch[1]) : undefined;
+                const reviewsMatch = ratingLabel.match(/\(([\d,]+)\)/) || ratingLabel.match(/([\d,]+)\s+reviews/);
+                const reviews = reviewsMatch ? parseInt(reviewsMatch[1].replace(/,/g, '')) : 0;
                 const text = item.innerText || '';
                 const lines = text.split('\n');
                 const address = lines.find((l)=>l.match(/\d+/) && l !== name && l.length > 5) || '';
                 extracted.push({
                     name,
                     rating,
-                    reviews: 0,
+                    reviews,
                     address: address.trim(),
+                    url,
                     rank: extracted.length + 1
                 });
             });
@@ -204,11 +336,38 @@ async function runScan(scanId) {
             status: 'RUNNING'
         }
     });
-    const points = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$grid$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateGrid"])(scan.centerLat, scan.centerLng, scan.radius, scan.gridSize);
-    // Launch browser ONCE for the entire scan
-    const browser = await __TURBOPACK__imported__module__$5b$externals$5d2f$playwright__$5b$external$5d$__$28$playwright$2c$__esm_import$2c$__$5b$project$5d2f$node_modules$2f$playwright$29$__["chromium"].launch({
+    const points = scan.customPoints ? JSON.parse(scan.customPoints) : (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$grid$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateGrid"])(scan.centerLat, scan.centerLng, scan.radius, scan.gridSize, scan.shape);
+    // Fetch enabled proxies and global settings
+    const [enabledProxies, proxySetting] = await Promise.all([
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.findMany({
+            where: {
+                enabled: true
+            }
+        }),
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].globalSetting.findUnique({
+            where: {
+                key: 'useSystemProxy'
+            }
+        })
+    ]);
+    const useSystemProxy = proxySetting ? proxySetting.value === 'true' : true;
+    const launchOptions = {
         headless: true
-    });
+    };
+    // If not using system proxy and we have proxies in the pool
+    if (!useSystemProxy && enabledProxies.length > 0) {
+        // Simple random proxy selection for load balancing
+        const p = enabledProxies[Math.floor(Math.random() * enabledProxies.length)];
+        launchOptions.proxy = {
+            server: `${p.host}:${p.port}`,
+            username: p.username || undefined,
+            password: p.password || undefined
+        };
+        console.log(`[Scanner] Using proxy routing: ${p.host}:${p.port}`);
+    } else {
+        console.log(`[Scanner] Using Direct System Connection (no proxy)`);
+    }
+    const browser = await __TURBOPACK__imported__module__$5b$externals$5d2f$playwright__$5b$external$5d$__$28$playwright$2c$__esm_import$2c$__$5b$project$5d2f$node_modules$2f$playwright$29$__["chromium"].launch(launchOptions);
     const context = await browser.newContext({
         viewport: {
             width: 1280,
@@ -265,12 +424,58 @@ async function runScan(scanId) {
             // Delay between points to avoid detection (slightly reduced since we are reusing context)
             await new Promise((resolve)=>setTimeout(resolve, 1500 + Math.random() * 2000));
         }
+        // Calculate NEXT RUN if recurring
+        let nextRun = null;
+        if (scan.frequency === 'DAILY') {
+            nextRun = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        } else if (scan.frequency === 'WEEKLY') {
+            nextRun = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        }
+        // Check for rank changes and create alerts
+        if (scan.businessName) {
+            const previousScan = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.findFirst({
+                where: {
+                    keyword: scan.keyword,
+                    businessName: scan.businessName,
+                    status: 'COMPLETED',
+                    id: {
+                        not: scanId
+                    }
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                include: {
+                    results: true
+                }
+            });
+            if (previousScan) {
+                const currentResults = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].result.findMany({
+                    where: {
+                        scanId
+                    }
+                });
+                const currentAvg = currentResults.reduce((acc, r)=>acc + (r.rank || 21), 0) / currentResults.length;
+                const previousAvg = previousScan.results.reduce((acc, r)=>acc + (r.rank || 21), 0) / previousScan.results.length;
+                const diff = previousAvg - currentAvg; // Positive means improvement (rank decreased)
+                if (Math.abs(diff) >= 0.5) {
+                    await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].alert.create({
+                        data: {
+                            type: diff > 0 ? 'RANK_UP' : 'RANK_DOWN',
+                            message: `${scan.businessName} rank ${diff > 0 ? 'improved' : 'dropped'} by ${Math.abs(diff).toFixed(1)} points for "${scan.keyword}"`,
+                            scanId: scan.id
+                        }
+                    });
+                }
+            }
+        }
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.update({
             where: {
                 id: scanId
             },
             data: {
-                status: 'COMPLETED'
+                status: 'COMPLETED',
+                nextRun
             }
         });
     } catch (error) {
@@ -281,6 +486,13 @@ async function runScan(scanId) {
             },
             data: {
                 status: 'FAILED'
+            }
+        });
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].alert.create({
+            data: {
+                type: 'SCAN_ERROR',
+                message: `Scan failed for "${scan.keyword}": ${error instanceof Error ? error.message : String(error)}`,
+                scanId: scanId
             }
         });
     } finally{
@@ -329,10 +541,10 @@ async function GET() {
 }
 async function POST(req) {
     try {
-        const { keyword, address, radius, gridSize, frequency, businessName } = await req.json();
-        // MOCKING Geocoding - In production, use Google Maps Geocoding API
-        const centerLat = 41.8781;
-        const centerLng = -87.6298;
+        const { keyword, radius, gridSize, frequency, businessName, shape, customPoints, lat, lng } = await req.json();
+        // Use provided coordinates or default to Chicago (Mock)
+        const centerLat = lat || 41.8781;
+        const centerLng = lng || -87.6298;
         const scan = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.create({
             data: {
                 keyword,
@@ -340,6 +552,8 @@ async function POST(req) {
                 centerLng,
                 radius: parseFloat(radius) || 5,
                 gridSize: parseInt(gridSize) || 3,
+                shape: shape || 'SQUARE',
+                customPoints: customPoints ? JSON.stringify(customPoints) : null,
                 frequency: frequency || 'ONCE',
                 businessName: businessName || undefined,
                 status: 'PENDING'

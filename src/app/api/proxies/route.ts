@@ -16,10 +16,32 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const data = await req.json();
+
+        if (!data.host || !data.port) {
+            return NextResponse.json({ error: 'Host and Port are required' }, { status: 400 });
+        }
+
+        const port = parseInt(data.port);
+        if (isNaN(port)) {
+            return NextResponse.json({ error: 'Invalid port number' }, { status: 400 });
+        }
+
+        // Check for duplicates
+        const existing = await prisma.proxy.findFirst({
+            where: {
+                host: data.host,
+                port: port
+            }
+        });
+
+        if (existing) {
+            return NextResponse.json({ error: 'Proxy already exists in pool' }, { status: 409 });
+        }
+
         const proxy = await prisma.proxy.create({
             data: {
                 host: data.host,
-                port: parseInt(data.port),
+                port: port,
                 username: data.username || null,
                 password: data.password || null,
                 type: data.type || 'RESIDENTIAL',
@@ -27,9 +49,17 @@ export async function POST(req: Request) {
             },
         });
         return NextResponse.json(proxy);
-    } catch (error) {
-        console.error('Proxy creation error:', error);
-        return NextResponse.json({ error: 'Failed to create proxy' }, { status: 500 });
+    } catch (error: any) {
+        console.error('Proxy creation error details:', {
+            message: error.message,
+            code: error.code,
+            meta: error.meta,
+            stack: error.stack
+        });
+        return NextResponse.json({
+            error: 'Failed to create proxy',
+            details: error.message
+        }, { status: 500 });
     }
 }
 
@@ -54,6 +84,12 @@ export async function DELETE(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');
+
+        if (id === 'all') {
+            await prisma.proxy.deleteMany({});
+            return NextResponse.json({ success: true, message: 'Proxy pool purged' });
+        }
+
         if (!id) throw new Error('Proxy ID required');
 
         await prisma.proxy.delete({ where: { id } });

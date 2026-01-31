@@ -346,6 +346,8 @@ module.exports = mod;
 "use strict";
 
 __turbopack_context__.s([
+    "exportAllScansToXLSX",
+    ()=>exportAllScansToXLSX,
     "exportToPDF",
     ()=>exportToPDF,
     "exportToXLSX",
@@ -359,7 +361,23 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jspdf$2d$aut
 ;
 async function exportToXLSX(scanName, data) {
     const workbook = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$exceljs$2f$excel$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].Workbook();
-    const worksheet = workbook.addWorksheet('Scan Results');
+    addScanToWorkbook(workbook, scanName, data);
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([
+        buffer
+    ], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${scanName.replace(/\s+/g, '_')}_results.xlsx`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+function addScanToWorkbook(workbook, scanName, data) {
+    const sheetName = scanName.substring(0, 31).replace(/[\\\/\?\*\[\]]/g, '_');
+    const worksheet = workbook.addWorksheet(sheetName);
     worksheet.columns = [
         {
             header: 'Rank',
@@ -421,6 +439,62 @@ async function exportToXLSX(scanName, data) {
             console.error('Failed to parse results for excel export', e);
         }
     });
+}
+async function exportAllScansToXLSX(scans) {
+    const workbook = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$exceljs$2f$excel$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].Workbook();
+    // Summary sheet first
+    const summarySheet = workbook.addWorksheet('All Scans Summary');
+    summarySheet.columns = [
+        {
+            header: 'Keyword',
+            key: 'keyword',
+            width: 30
+        },
+        {
+            header: 'Status',
+            key: 'status',
+            width: 15
+        },
+        {
+            header: 'Grid Size',
+            key: 'gridSize',
+            width: 10
+        },
+        {
+            header: 'Radius',
+            key: 'radius',
+            width: 10
+        },
+        {
+            header: 'Created At',
+            key: 'createdAt',
+            width: 25
+        },
+        {
+            header: 'Center Lat',
+            key: 'centerLat',
+            width: 15
+        },
+        {
+            header: 'Center Lng',
+            key: 'centerLng',
+            width: 15
+        }
+    ];
+    scans.forEach((scan)=>{
+        summarySheet.addRow({
+            keyword: scan.keyword,
+            status: scan.status,
+            gridSize: `${scan.gridSize}x${scan.gridSize}`,
+            radius: `${scan.radius}km`,
+            createdAt: new Date(scan.createdAt).toLocaleString(),
+            centerLat: scan.centerLat,
+            centerLng: scan.centerLng
+        });
+        if (scan.results && scan.results.length > 0) {
+            addScanToWorkbook(workbook, scan.keyword, scan.results);
+        }
+    });
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([
         buffer
@@ -430,7 +504,7 @@ async function exportToXLSX(scanName, data) {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${scanName.replace(/\s+/g, '_')}_results.xlsx`;
+    a.download = `GeoRanker_All_Scans_${new Date().toISOString().split('T')[0]}.xlsx`;
     a.click();
     window.URL.revokeObjectURL(url);
 }
@@ -1685,9 +1759,9 @@ function ScanReportPage({ params }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$index$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                 variant: "ghost",
                                 size: "sm",
-                                onClick: ()=>setActiveTab('list'),
+                                onClick: ()=>setActiveTab('competitors'),
                                 className: "text-blue-600 font-bold text-xs uppercase tracking-wider",
-                                children: "View All Contributors"
+                                children: "View All Contributions"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scans/[id]/page.tsx",
                                 lineNumber: 220,

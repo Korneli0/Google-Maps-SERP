@@ -217,8 +217,8 @@ export default function ScanReportPage({ params }: { params: Promise<{ id: strin
                         <Trophy size={18} className="text-blue-600" />
                         Top Competitors Detected
                     </h2>
-                    <Button variant="ghost" size="sm" onClick={() => setActiveTab('list')} className="text-blue-600 font-bold text-xs uppercase tracking-wider">
-                        View All Contributors
+                    <Button variant="ghost" size="sm" onClick={() => setActiveTab('competitors')} className="text-blue-600 font-bold text-xs uppercase tracking-wider">
+                        View All Contributions
                     </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

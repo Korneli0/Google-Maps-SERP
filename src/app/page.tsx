@@ -36,7 +36,7 @@ export default function DashboardPage() {
     }, []);
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
             <LookbackNotifier />
 
             {/* Header */}

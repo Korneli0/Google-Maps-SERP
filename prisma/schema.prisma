@@ -45,6 +45,8 @@ model Proxy {
   type         String   @default("RESIDENTIAL") // RESIDENTIAL, DATACENTER
   enabled      Boolean  @default(true)
   createdAt    DateTime @default(now())
+
+  @@unique([host, port])
 }
 
 model Alert {
@@ -54,4 +56,10 @@ model Alert {
   scanId    String
   createdAt DateTime @default(now())
   read      Boolean  @default(false)
+}
+
+model GlobalSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
 }

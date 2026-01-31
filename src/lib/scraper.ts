@@ -11,14 +11,19 @@ export interface ScrapeResult {
 
 export async function scrapeGMB(page: Page, keyword: string, lat: number, lng: number): Promise<ScrapeResult[]> {
     try {
-        console.log(`[Scraper] Starting scrape for: ${keyword} at ${lat}, ${lng}`);
+        console.log(`[Scraper] Navigating to: https://www.google.com/maps/search/${keyword}/@${lat},${lng},14z/`);
 
-        // Navigate with a more realistic timeout and wait strategy
-        // Google Maps takes a long time to reach networkidle, so we use domcontentloaded
-        await page.goto(`https://www.google.com/maps/search/${encodeURIComponent(keyword)}/@${lat},${lng},14z/`, {
-            waitUntil: 'domcontentloaded',
-            timeout: 60000,
-        });
+        // Use a 30s timeout for the initial load, wait for domcontentloaded
+        // If this fails, it's likely a dead proxy or a block
+        try {
+            await page.goto(`https://www.google.com/maps/search/${encodeURIComponent(keyword)}/@${lat},${lng},14z/`, {
+                waitUntil: 'domcontentloaded',
+                timeout: 30000,
+            });
+        } catch (gotoError: any) {
+            console.error(`[Scraper] Page goto failed: ${gotoError.message}`);
+            throw gotoError; // Rethrow to be caught by the scanner's retry logic
+        }
 
         // Wait for results to load - use multiple common selectors
         try {

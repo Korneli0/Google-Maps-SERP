@@ -66,6 +66,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__
 ;
 ;
 async function POST() {
+    console.log('[ProxyFetch] POST request received at /api/proxies/fetch');
     try {
         const sources = [
             {
@@ -75,56 +76,113 @@ async function POST() {
             {
                 name: 'ShiftyTR',
                 url: 'https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt'
+            },
+            {
+                name: 'Monosans',
+                url: 'https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt'
+            },
+            {
+                name: 'ProxyListPlus',
+                url: 'https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt'
+            },
+            {
+                name: 'ProxyListDownload',
+                url: 'https://www.proxy-list.download/api/v1/get?type=http'
+            },
+            {
+                name: 'ProxyScan',
+                url: 'https://www.proxyscan.io/download?type=http'
             }
         ];
+        // Safety Check: Check for active scans
+        const activeScans = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.findFirst({
+            where: {
+                status: 'RUNNING'
+            }
+        });
+        if (activeScans) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: false,
+                logs: [
+                    '[CAUTION] Active scan detected.',
+                    '[ABORT] Proxy pool synchronization paused to prevent routing instability.'
+                ],
+                count: 0
+            });
+        }
         let allProxies = [];
         const logs = [];
         for (const source of sources){
             try {
-                const res = await fetch(source.url);
+                console.log(`[ProxyFetch] Fetching from ${source.name}: ${source.url}`);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(()=>controller.abort(), 8000); // 8s timeout per source
+                const res = await fetch(source.url, {
+                    next: {
+                        revalidate: 3600
+                    },
+                    signal: controller.signal
+                }).finally(()=>clearTimeout(timeoutId));
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const text = await res.text();
-                const lines = text.split('\n').map((l)=>l.trim()).filter((l)=>l.includes(':'));
+                const lines = text.split('\n').map((l)=>l.trim()).filter((l)=>l.includes(':') && l.length > 5);
                 allProxies = [
                     ...allProxies,
                     ...lines
                 ];
+                console.log(`[ProxyFetch] ${source.name}: Got ${lines.length} proxies`);
                 logs.push(`Fetched ${lines.length} proxies from ${source.name}`);
             } catch (err) {
-                console.error(`Failed to fetch from ${source.name}:`, err);
-                logs.push(`Failed to fetch from ${source.name}`);
+                console.error(`[ProxyFetch] Failed ${source.name}:`, err.message);
+                logs.push(`Failed to fetch from ${source.name}: ${err.message}`);
             }
         }
-        const uniqueProxies = Array.from(new Set(allProxies)).slice(0, 50);
-        for (const entry of uniqueProxies){
-            const [host, port] = entry.split(':');
-            if (!host || !port) continue;
-            const exists = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.findFirst({
-                where: {
-                    host,
-                    port: parseInt(port)
-                }
+        console.log(`[ProxyFetch] Total unique potential proxies: ${new Set(allProxies).size}`);
+        const uniqueEntries = Array.from(new Set(allProxies)).slice(0, 500);
+        const proxyData = uniqueEntries.map((entry)=>{
+            const [host, portStr] = entry.split(':');
+            return {
+                host,
+                port: parseInt(portStr),
+                type: 'DATACENTER',
+                enabled: true
+            };
+        }).filter((p)=>p.host && !isNaN(p.port));
+        console.log(`[ProxyFetch] Saving ${proxyData.length} unique proxies...`);
+        // SQLite doesn't support skipDuplicates in createMany. 
+        // We filter out existing proxies manually to avoid unique constraint violations.
+        const existingProxies = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.findMany({
+            select: {
+                host: true,
+                port: true
+            }
+        });
+        const existingKeys = new Set(existingProxies.map((p)=>`${p.host}:${p.port}`));
+        const newProxies = proxyData.filter((p)=>!existingKeys.has(`${p.host}:${p.port}`));
+        console.log(`[ProxyFetch] Detected ${newProxies.length} new unique proxies (Filtered ${proxyData.length - newProxies.length} duplicates)`);
+        let count = 0;
+        if (newProxies.length > 0) {
+            const result = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.createMany({
+                data: newProxies
             });
-            if (!exists) {
-                await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].proxy.create({
-                    data: {
-                        host,
-                        port: parseInt(port),
-                        type: 'DATACENTER',
-                        enabled: true
-                    }
-                });
-            }
+            count = result.count;
         }
+        console.log(`[ProxyFetch] Sync complete. Added ${count} new proxies.`);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             success: true,
             sources: sources.map((s)=>s.name),
-            logs,
-            count: uniqueProxies.length
+            logs: [
+                ...logs,
+                `[SYNC] Added ${count} new unique routing coordinates.`
+            ],
+            count: count
         });
     } catch (error) {
-        console.error('Proxy fetcher error:', error);
+        console.error('[ProxyFetch] Global error:', error);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            error: 'Failed to fetch proxies'
+            success: false,
+            error: 'Failed to fetch proxies',
+            details: error.message
         }, {
             status: 500
         });

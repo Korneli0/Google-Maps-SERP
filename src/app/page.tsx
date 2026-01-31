@@ -84,7 +84,7 @@ export default function DashboardPage() {
                             <h3 className="text-3xl font-bold text-gray-900 mt-2">42%</h3>
                         </div>
                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-                            <BarChart2 size={20} />
+                            <BarChart3 size={20} />
                         </div>
                     </div>
                     <div className="mt-4 flex items-center text-sm">

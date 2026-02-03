@@ -258,7 +258,7 @@ export default function ScanReportPage({ params }: { params: Promise<{ id: strin
 
     const handleExportPDF = () => {
         if (!scan) return;
-        exportToPDF(scan.keyword, scan.results);
+        exportToPDF(scan.keyword, scan.results, scan);
     };
 
     const handleShare = async () => {

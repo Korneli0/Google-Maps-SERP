@@ -20206,3 +20206,12 @@ Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
 [83:51:28.298] Server  LOG     ✓ Compiled in 125ms
 [84:03:15.501] Server  LOG     ✓ Compiled in 39ms
 [84:03:24.544] Server  LOG     ✓ Compiled in 18ms
+[84:18:56.807] Server  LOG     ✓ Compiled in 142ms
+[84:18:58.343] Browser ERROR   uncaughtError: TypeError: Cannot read properties of undefined (reading 'bottomright')
+[84:18:58.343] Browser ERROR   uncaughtError: Error: Map container is being reused by another instance
+[84:19:20.088] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[84:19:20.356] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /scans/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[84:19:20.356] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[84:19:20.357] Server  LOG     ✓ Compiled in 29ms

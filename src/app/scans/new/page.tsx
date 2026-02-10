@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -68,6 +68,20 @@ export default function NewScanPage() {
     const [lookupUrl, setLookupUrl] = useState('');
     const [isUrlImport, setIsUrlImport] = useState(false);
     const [isManualValue, setIsManualValue] = useState(false);
+    const lookupDropdownRef = useRef<HTMLDivElement>(null);
+
+    // Dismiss lookup dropdown on click outside
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (lookupDropdownRef.current && !lookupDropdownRef.current.contains(e.target as Node)) {
+                setLookupResults([]);
+            }
+        }
+        if (lookupResults.length > 0) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [lookupResults.length]);
 
     const [gridStrategy, setGridStrategy] = useState<'GEOMETRIC' | 'CITY'>('GEOMETRIC');
     const [cityConfig, setCityConfig] = useState({ type: 'zip' as 'zip' | 'neighborhood' });
@@ -426,7 +440,7 @@ export default function NewScanPage() {
                                                         )}
 
                                                         {lookupResults.length > 0 && (
-                                                            <div className="absolute top-full left-0 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
+                                                            <div ref={lookupDropdownRef} className="absolute top-full left-0 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
                                                                 {lookupResults.map((biz, i) => (
                                                                     <div
                                                                         key={i}

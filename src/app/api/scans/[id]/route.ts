@@ -47,9 +47,22 @@ export async function PATCH(
         const { id } = await params;
         const body = await request.json();
 
+        // Whitelist only fields that should be updatable via PATCH
+        const allowedFields = ['keyword', 'businessName', 'radius', 'frequency', 'gridSize', 'shape'];
+        const safeData: Record<string, any> = {};
+        for (const key of allowedFields) {
+            if (body[key] !== undefined) {
+                safeData[key] = body[key];
+            }
+        }
+
+        if (Object.keys(safeData).length === 0) {
+            return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+        }
+
         const scan = await prisma.scan.update({
             where: { id },
-            data: body,
+            data: safeData,
         });
 
         return NextResponse.json(scan);

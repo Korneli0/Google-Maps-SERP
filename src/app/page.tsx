@@ -20,6 +20,8 @@ interface Scan {
 
 interface DashboardData {
     scansCount: number;
+    completedScans: number;
+    activeScans: number;
     recentScans: Scan[];
 }
 
@@ -71,27 +73,25 @@ export default function DashboardPage() {
                     </div>
                     <div className="mt-4 flex items-center text-sm">
                         <span className="text-emerald-600 font-medium flex items-center">
-                            <TrendingUp size={14} className="mr-1" /> +12%
+                            <Target size={14} className="mr-1" /> {loading ? '-' : data?.completedScans} completed
                         </span>
-                        <span className="text-gray-400 ml-2">vs last month</span>
                     </div>
                 </Card>
 
                 <Card className="p-6 card-hover h-full">
                     <div className="flex items-start justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-500">Avg Visibility</p>
-                            <h3 className="text-3xl font-bold text-gray-900 mt-2">42%</h3>
+                            <p className="text-sm font-medium text-gray-500">Active Scans</p>
+                            <h3 className="text-3xl font-bold text-gray-900 mt-2">{loading ? '-' : data?.activeScans}</h3>
                         </div>
                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
                             <BarChart3 size={20} />
                         </div>
                     </div>
                     <div className="mt-4 flex items-center text-sm">
-                        <span className="text-emerald-600 font-medium flex items-center">
-                            <TrendingUp size={14} className="mr-1" /> +5%
+                        <span className="text-gray-500 font-medium flex items-center">
+                            <TrendingUp size={14} className="mr-1" /> Running or Pending
                         </span>
-                        <span className="text-gray-400 ml-2">vs last month</span>
                     </div>
                 </Card>
 

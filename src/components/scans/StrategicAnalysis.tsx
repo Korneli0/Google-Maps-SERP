@@ -90,10 +90,10 @@ export function StrategicAnalysis({ competitors, categoryMetrics, reviewMetrics 
 
     // Threat level styling
     const threatStyles = {
-        low: { bg: 'bg-green-500', text: 'text-green-600', label: 'Low Threat' },
-        medium: { bg: 'bg-amber-500', text: 'text-amber-600', label: 'Medium Threat' },
-        high: { bg: 'bg-orange-500', text: 'text-orange-600', label: 'High Threat' },
-        critical: { bg: 'bg-red-500', text: 'text-red-600', label: 'Critical Threat' }
+        low: { bg: 'bg-green-500', text: 'text-green-600', label: 'Low Threat', hex: '#22c55e' },
+        medium: { bg: 'bg-amber-500', text: 'text-amber-600', label: 'Medium Threat', hex: '#f59e0b' },
+        high: { bg: 'bg-orange-500', text: 'text-orange-600', label: 'High Threat', hex: '#f97316' },
+        critical: { bg: 'bg-red-500', text: 'text-red-600', label: 'Critical Threat', hex: '#ef4444' }
     };
 
     const threatStyle = threatStyles[insights.threatLevel];
@@ -110,7 +110,7 @@ export function StrategicAnalysis({ competitors, categoryMetrics, reviewMetrics 
                     </div>
                     <div className="flex items-end justify-between">
                         <div>
-                            <p className={`text-2xl font-black ${threatStyle.text.replace('text-', 'text-')}`} style={{ color: threatStyle.bg.replace('bg-', '') === 'green-500' ? '#22c55e' : threatStyle.bg.replace('bg-', '') === 'amber-500' ? '#f59e0b' : threatStyle.bg.replace('bg-', '') === 'orange-500' ? '#f97316' : '#ef4444' }}>
+                            <p className="text-2xl font-black" style={{ color: threatStyle.hex }}>
                                 {insights.threatScore}
                             </p>
                             <p className="text-xs text-slate-400 font-bold uppercase mt-1">{threatStyle.label}</p>

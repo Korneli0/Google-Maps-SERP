@@ -167,7 +167,7 @@ export function CompetitorIntelligenceDashboard({ results, targetBusinessName, t
                     reviewMetrics={reviewMetrics}
                 />
             )}
-            {activeTab === 'competitors' && (
+            {activeTab === 'categories' && (
                 <Card className="p-6 border border-gray-100">
                     <h3 className="font-bold text-gray-900 mb-4">Top Categories in Market</h3>
                     <div className="space-y-3">
@@ -296,7 +296,7 @@ export function CompetitorIntelligenceDashboard({ results, targetBusinessName, t
                                 <AlertTriangle size={14} />
                                 Service Area Only
                             </div>
-                            <div className="text-xl font-black text-amber-800">{profileMetrics.servicAreaBusinesses}</div>
+                            <div className="text-xl font-black text-amber-800">{profileMetrics.serviceAreaBusinesses}</div>
                         </div>
                     </div>
                 </Card>

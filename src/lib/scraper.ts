@@ -35,7 +35,7 @@ export async function scrapeGMB(page: Page, keyword: string, lat: number, lng: n
         // Use a 30s timeout for the initial load, wait for domcontentloaded
         // If this fails, it's likely a dead proxy or a block
         try {
-            await page.goto(`https://www.google.com/maps/search/${encodeURIComponent(keyword)}/@${lat},${lng},14z/?hl=en`, {
+            await page.goto(`https://www.google.com/maps/search/${encodeURIComponent(keyword)}/@${lat},${lng},15z/?hl=en`, {
                 waitUntil: 'domcontentloaded',
                 timeout: 30000,
             });
@@ -68,13 +68,54 @@ export async function scrapeGMB(page: Page, keyword: string, lat: number, lng: n
             console.log('[Scraper] Warning: Standard result selectors not found, trying fallback extraction anyway.');
         }
 
-        // Mimic human scrolling behavior
-        for (let i = 0; i < 3; i++) {
-            await page.evaluate(() => {
-                const scrollable = document.querySelector('[role="feed"]') || document.body;
-                scrollable.scrollBy(0, 800);
-            });
-            await page.waitForTimeout(1000 + Math.random() * 1000);
+        // Scroll the results feed until ALL results are loaded.
+        // Google Maps lazy-loads results as you scroll — we must load them all
+        // to get accurate rankings (especially for businesses ranked 10-20).
+        {
+            let previousCount = 0;
+            let noNewResultsStreak = 0;
+            const maxScrollIterations = 12;  // Safety limit
+            const maxNoNewResults = 3;       // Stop after 3 scrolls with no new results
+
+            for (let i = 0; i < maxScrollIterations; i++) {
+                // Count current results
+                const currentCount = await page.evaluate(() => {
+                    const articles = document.querySelectorAll('[role="article"]');
+                    const links = document.querySelectorAll('a[href*="/maps/place/"]');
+                    return Math.max(articles.length, links.length);
+                });
+
+                if (currentCount === previousCount) {
+                    noNewResultsStreak++;
+                    if (noNewResultsStreak >= maxNoNewResults) {
+                        // No new results after multiple scrolls — we've loaded everything
+                        break;
+                    }
+                } else {
+                    noNewResultsStreak = 0;
+                }
+                previousCount = currentCount;
+
+                // Check if we hit the "end of results" marker
+                const hitEnd = await page.evaluate(() => {
+                    const feed = document.querySelector('[role="feed"]');
+                    if (!feed) return false;
+                    // Google shows "You've reached the end of the list" or similar
+                    const text = (feed as HTMLElement).innerText || '';
+                    return text.includes('end of the list') || text.includes('No more results');
+                });
+
+                if (hitEnd) break;
+
+                // Scroll down
+                await page.evaluate(() => {
+                    const scrollable = document.querySelector('[role="feed"]') || document.body;
+                    scrollable.scrollBy(0, 1000);
+                });
+
+                // Human-like random delay between scrolls
+                await page.waitForTimeout(800 + Math.random() * 1200);
+            }
         }
 
         // =============================================================
@@ -279,9 +320,9 @@ export async function scrapeGMB(page: Page, keyword: string, lat: number, lng: n
                 const priceLevelMatch = text.match(/(\$+)(?:\s|·|$)/);
                 const priceLevel = priceLevelMatch ? priceLevelMatch[1] : undefined;
 
-                // Open Now detection
-                const openNow = text.toLowerCase().includes('open') &&
-                    (text.toLowerCase().includes('open now') || text.toLowerCase().includes('opens '));
+                // Open Now detection — only match actual "open" states, NOT "opens at" (which means closed)
+                const textLower = text.toLowerCase();
+                const openNow = textLower.includes('open now') || textLower.includes('open 24 hours');
 
                 // Years in business extraction
                 let yearsInBusiness: number | undefined;

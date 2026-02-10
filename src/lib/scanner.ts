@@ -53,10 +53,49 @@ function getRegionalSettings(lat: number, lng: number) {
     return { locale, timezoneId };
 }
 
+/**
+ * Normalize a business name for accurate matching.
+ * Strips common suffixes, punctuation, and extra whitespace.
+ */
+function normalizeBusinessName(name: string): string {
+    return name
+        .toLowerCase()
+        .replace(/[''`]/g, "'")  // Normalize quotes
+        .replace(/[^a-z0-9'\s]/g, ' ')  // Strip punctuation except apostrophes
+        .replace(/\b(llc|inc|corp|ltd|co|the|and|of)\b/g, '')  // Remove common suffixes/articles
+        .replace(/\s+/g, ' ')  // Collapse whitespace
+        .trim();
+}
+
+/**
+ * Check if two business names match, using normalized comparison.
+ * Returns true if one name contains the other (after normalization).
+ */
+function businessNamesMatch(scanName: string, resultName: string): boolean {
+    const normScan = normalizeBusinessName(scanName);
+    const normResult = normalizeBusinessName(resultName);
+
+    if (!normScan || !normResult) return false;
+
+    // Exact match after normalization
+    if (normScan === normResult) return true;
+
+    // Check if one fully contains the other
+    if (normResult.includes(normScan) || normScan.includes(normResult)) return true;
+
+    // Token overlap check: if 80%+ of words in the scan name appear in the result
+    const scanTokens = normScan.split(' ').filter(t => t.length > 1);
+    const resultTokens = new Set(normResult.split(' ').filter(t => t.length > 1));
+    if (scanTokens.length > 0) {
+        const matchCount = scanTokens.filter(t => resultTokens.has(t)).length;
+        if (matchCount / scanTokens.length >= 0.8) return true;
+    }
+
+    return false;
+}
+
 export async function runScan(scanId: string) {
     let browser: Browser | null = null;
-    let context: BrowserContext | null = null;
-    let page: Page | null = null;
     let currentProxyId: string | null = null;
     let scan: Scan | null = null;
 
@@ -89,9 +128,8 @@ export async function runScan(scanId: string) {
         const proxySetting = await prisma.globalSetting.findUnique({ where: { key: 'useSystemProxy' } });
         const useSystemProxy = proxySetting ? proxySetting.value === 'true' : true;
 
-        async function initBrowser(failedProxyId?: string) {
-            await logger.debug('Initializing browser context...', 'SCANNER', { failedProxyId });
-            if (browser) await browser.close();
+        async function launchBrowser(failedProxyId?: string): Promise<Browser> {
+            await logger.debug('Launching browser...', 'SCANNER', { failedProxyId });
 
             // If a proxy failed, mark it DEAD in the database immediately
             if (failedProxyId) {
@@ -133,7 +171,7 @@ export async function runScan(scanId: string) {
             }
 
             try {
-                browser = await chromium.launch(launchOptions);
+                return await chromium.launch(launchOptions);
             } catch (launchErr: any) {
                 await logger.warn(`Failed to launch browser with proxy ${launchOptions.proxy?.server || 'DIRECT'}: ${launchErr.message}. Retrying without proxy...`, 'SCANNER');
 
@@ -147,28 +185,49 @@ export async function runScan(scanId: string) {
 
                 // Fallback to direct connection
                 delete launchOptions.proxy;
-                browser = await chromium.launch(launchOptions);
+                return await chromium.launch(launchOptions);
             }
+        }
 
-            // Derive regional persona
-            const { locale, timezoneId } = getRegionalSettings(scan.centerLat, scan.centerLng);
+        /**
+         * Create a completely fresh, isolated browser context for a single grid point.
+         * This is CRITICAL for accuracy — prevents Google from personalizing results
+         * based on cookies/history from previous grid points.
+         */
+        async function createFreshContext(b: Browser, lat: number, lng: number): Promise<{ context: BrowserContext; page: Page }> {
+            const { locale, timezoneId } = getRegionalSettings(scan!.centerLat, scan!.centerLng);
 
-            context = await browser.newContext({
-                viewport: { width: 1280, height: 800 },
+            // Randomize viewport slightly to reduce fingerprinting
+            const widthJitter = Math.floor(Math.random() * 40) - 20; // ±20px
+            const heightJitter = Math.floor(Math.random() * 20) - 10; // ±10px
+
+            const ctx = await b.newContext({
+                viewport: { width: 1280 + widthJitter, height: 800 + heightJitter },
                 userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 locale,
                 timezoneId,
+                // Start with zero state — no cookies, no storage
+                storageState: { cookies: [], origins: [] },
                 extraHTTPHeaders: {
-                    'Accept-Language': 'en-US,en;q=0.9'
-                }
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'DNT': '1',           // Do Not Track
+                    'Sec-GPC': '1',       // Global Privacy Control
+                },
+                // Disable service workers to prevent caching
+                serviceWorkers: 'block',
             });
 
-            await context.grantPermissions(['geolocation']);
-            page = await context.newPage();
-            await logger.info(`Browser context ready (${locale}/${timezoneId}).`, 'SCANNER', { proxy: launchOptions.proxy?.server || 'DIRECT' });
+            await ctx.grantPermissions(['geolocation']);
+            await ctx.setGeolocation({ latitude: lat, longitude: lng });
+
+            // Clear all storage as extra safety
+            await ctx.clearCookies();
+
+            const pg = await ctx.newPage();
+            return { context: ctx, page: pg };
         }
 
-        await initBrowser();
+        browser = await launchBrowser();
 
         for (const point of points) {
             // Check if scan has been stopped or reset
@@ -191,10 +250,22 @@ export async function runScan(scanId: string) {
 
             while (!success && attempts < maxAttempts) {
                 attempts++;
+                // Create a FRESH context for each attempt — this is the key accuracy fix.
+                // Each grid point gets a clean browser with no cookies/cache/history.
+                let pointContext: BrowserContext | null = null;
+                let pointPage: Page | null = null;
                 try {
-                    await context.setGeolocation({ latitude: point.lat, longitude: point.lng });
-                    results = await scrapeGMB(page, scan.keyword, point.lat, point.lng);
+                    const fresh = await createFreshContext(browser!, point.lat, point.lng);
+                    pointContext = fresh.context;
+                    pointPage = fresh.page;
+
+                    results = await scrapeGMB(pointPage, scan.keyword, point.lat, point.lng);
                     success = true;
+
+                    // Validate result count
+                    if (results.length < 20) {
+                        await logger.debug(`[Accuracy] Point ${point.lat},${point.lng}: only ${results.length} results found (expected ~20)`, 'SCANNER');
+                    }
                 } catch (scrapeError: any) {
                     await logger.warn(`Attempt ${attempts} failed for point ${point.lat},${point.lng}: ${scrapeError.message}`, 'SCANNER');
                     if (attempts < maxAttempts) {
@@ -202,14 +273,20 @@ export async function runScan(scanId: string) {
                             scrapeError.message.includes('ERR_TUNNEL_CONNECTION_FAILED') ||
                             scrapeError.message.includes('TIMEOUT');
 
-                        await initBrowser(isProxyError ? (currentProxyId || undefined) : undefined);
+                        if (isProxyError) {
+                            // Re-launch browser with a different proxy
+                            if (browser) await browser.close().catch(() => { });
+                            browser = await launchBrowser(currentProxyId || undefined);
+                        }
                     }
+                } finally {
+                    // ALWAYS close the point context to free resources
+                    if (pointContext) await pointContext.close().catch(() => { });
                 }
             }
 
             if (!success) {
                 await logger.warn(`Point capture failed: ${point.lat}, ${point.lng} after max attempts.`, 'SCANNER');
-                // We create a result with empty data to allow the scan to continue but show the failure
                 await prisma.result.create({
                     data: {
                         scanId: scan.id,
@@ -226,7 +303,8 @@ export async function runScan(scanId: string) {
             let targetName = null;
 
             if (scan.businessName) {
-                const match = results.find(r => r.name.toLowerCase().includes(scan.businessName!.toLowerCase()));
+                // Use normalized matching instead of naive includes()
+                const match = results.find(r => businessNamesMatch(scan.businessName!, r.name));
                 if (match) {
                     rank = match.rank;
                     targetName = match.name;
@@ -243,7 +321,7 @@ export async function runScan(scanId: string) {
                     targetName
                 },
             });
-            await logger.debug(`Captured point ${point.lat},${point.lng}. Target Rank: ${rank || 'N/A'}`, 'SCANNER');
+            await logger.debug(`Captured point ${point.lat},${point.lng}. Target Rank: ${rank || 'N/A'} (${results.length} results)`, 'SCANNER');
 
             // Random delay between points
             await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));

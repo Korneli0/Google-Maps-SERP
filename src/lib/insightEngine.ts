@@ -304,9 +304,11 @@ export function generateInsights(
     const marketSaturation = calculateMarketSaturation(competitors, gridPointCount);
 
     // Calculate threat scores for all competitors
+    // Use total appearances (not gridPointCount) for accurate market presence ratio
+    const totalAppearances = competitors.reduce((sum, c) => sum + (c.appearances ?? 0), 0);
     const threatsWithScores = competitors.map(c => ({
         ...c,
-        threatScore: calculateThreatScore(c, gridPointCount)
+        threatScore: calculateThreatScore(c, totalAppearances || gridPointCount)
     })).sort((a, b) => b.threatScore - a.threatScore);
 
     // Get top threats

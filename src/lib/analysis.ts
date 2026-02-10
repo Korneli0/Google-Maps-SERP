@@ -59,7 +59,7 @@ export interface ProfileMetrics {
     withPhone: number;
     withWebsite: number;
     withAddress: number;
-    servicAreaBusinesses: number;
+    serviceAreaBusinesses: number;
     physicalLocations: number;
 }
 
@@ -80,25 +80,6 @@ export function analyzeCompetitors(
     const allBusinesses = new Map<string, CompetitorProfile>();
     const allCategories = new Map<string, CategoryAnalysis>();
     const categoryCountPerBusiness: number[] = [];
-
-    let totalRating = 0;
-    let totalReviews = 0;
-    let ratingCount = 0;
-    let reviewCount = 0;
-    let maxReviews = 0;
-    let minReviews = Infinity;
-    let withoutReviews = 0;
-
-    let withPhone = 0;
-    let withWebsite = 0;
-    let withAddress = 0;
-    let sabCount = 0;
-    let totalCompleteness = 0;
-    let completenessCount = 0;
-
-    const ratingDistribution: { [key: string]: number } = {
-        '5': 0, '4': 0, '3': 0, '2': 0, '1': 0, 'none': 0
-    };
 
     // Process all results
     results.forEach(result => {
@@ -188,44 +169,14 @@ export function analyzeCompetitors(
                     allCategories.get(biz.category)!.count++;
                 }
 
-                // Review metrics
-                if (biz.rating !== undefined) {
-                    totalRating += biz.rating;
-                    ratingCount++;
-                    const ratingKey = Math.floor(biz.rating).toString();
-                    if (ratingDistribution[ratingKey] !== undefined) {
-                        ratingDistribution[ratingKey]++;
-                    }
-                } else {
-                    ratingDistribution['none']++;
-                }
-
-                if (biz.reviews !== undefined) {
-                    totalReviews += biz.reviews;
-                    reviewCount++;
-                    maxReviews = Math.max(maxReviews, biz.reviews);
-                    minReviews = Math.min(minReviews, biz.reviews);
-                    if (biz.reviews === 0) withoutReviews++;
-                }
-
-                // Profile metrics
-                if (biz.phone) withPhone++;
-                if (biz.website) withWebsite++;
-                if (biz.address) withAddress++;
-                if (biz.isSAB) sabCount++;
-                if (biz.profileCompleteness !== undefined) {
-                    totalCompleteness += biz.profileCompleteness;
-                    completenessCount++;
-                }
             });
         } catch (e) {
             // Skip malformed results
         }
     });
 
-    // Calculate final metrics using unique businesses only
+    // Calculate final metrics using UNIQUE businesses only (not per-appearance)
     const uniqueBusinesses = Array.from(allBusinesses.values());
-    const totalBusinesses = uniqueBusinesses.length;
 
     // Sort competitors by appearances (dominance)
     const competitors = uniqueBusinesses
@@ -250,6 +201,38 @@ export function analyzeCompetitors(
         categoryGaps: [] // Would need target business categories to calculate
     };
 
+    // Review metrics: computed from UNIQUE businesses to avoid double-counting
+    const ratingDistribution: { [key: string]: number } = {
+        '5': 0, '4': 0, '3': 0, '2': 0, '1': 0, 'none': 0
+    };
+    let totalRating = 0;
+    let ratingCount = 0;
+    let totalReviews = 0;
+    let reviewCount = 0;
+    let maxReviews = 0;
+    let minReviews = Infinity;
+    let withoutReviews = 0;
+
+    for (const biz of uniqueBusinesses) {
+        if (biz.rating !== undefined) {
+            totalRating += biz.rating;
+            ratingCount++;
+            const ratingKey = Math.floor(biz.rating).toString();
+            if (ratingDistribution[ratingKey] !== undefined) {
+                ratingDistribution[ratingKey]++;
+            }
+        } else {
+            ratingDistribution['none']++;
+        }
+        if (biz.reviews !== undefined) {
+            totalReviews += biz.reviews;
+            reviewCount++;
+            maxReviews = Math.max(maxReviews, biz.reviews);
+            minReviews = Math.min(minReviews, biz.reviews);
+            if (biz.reviews === 0) withoutReviews++;
+        }
+    }
+
     const reviewMetrics: ReviewMetrics = {
         avgRating: ratingCount > 0 ? totalRating / ratingCount : 0,
         avgReviews: reviewCount > 0 ? totalReviews / reviewCount : 0,
@@ -260,7 +243,6 @@ export function analyzeCompetitors(
         ratingDistribution
     };
 
-    // Profile metrics: count from UNIQUE businesses only (not per-appearance)
     const profileMetrics: ProfileMetrics = {
         avgCompleteness: uniqueBusinesses.length > 0
             ? uniqueBusinesses.reduce((sum, b) => sum + (b.profileCompleteness || 0), 0) / uniqueBusinesses.length
@@ -268,7 +250,7 @@ export function analyzeCompetitors(
         withPhone: uniqueBusinesses.filter(b => b.phone).length,
         withWebsite: uniqueBusinesses.filter(b => b.website).length,
         withAddress: uniqueBusinesses.filter(b => b.address).length,
-        servicAreaBusinesses: uniqueBusinesses.filter(b => b.isSAB).length,
+        serviceAreaBusinesses: uniqueBusinesses.filter(b => b.isSAB).length,
         physicalLocations: uniqueBusinesses.filter(b => !b.isSAB).length
     };
 

@@ -68,6 +68,21 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$serv
 async function GET() {
     try {
         const scansCount = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.count();
+        const completedScans = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.count({
+            where: {
+                status: 'COMPLETED'
+            }
+        });
+        const activeScans = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.count({
+            where: {
+                status: {
+                    in: [
+                        'RUNNING',
+                        'PENDING'
+                    ]
+                }
+            }
+        });
         const recentScans = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.findMany({
             orderBy: {
                 createdAt: 'desc'
@@ -76,12 +91,16 @@ async function GET() {
         });
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             scansCount,
+            completedScans,
+            activeScans,
             recentScans
         });
     } catch (error) {
         console.error('Dashboard API error:', error);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             scansCount: 0,
+            completedScans: 0,
+            activeScans: 0,
             recentScans: []
         });
     }

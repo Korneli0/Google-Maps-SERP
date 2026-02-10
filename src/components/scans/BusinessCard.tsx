@@ -51,10 +51,39 @@ interface BusinessCardProps {
     compact?: boolean;
 }
 
+/**
+ * Normalize a business name for accurate matching.
+ * Strips common suffixes, punctuation, and extra whitespace.
+ */
+function normalizeBusinessName(name: string): string {
+    return name
+        .toLowerCase()
+        .replace(/[''`]/g, "'")
+        .replace(/[^a-z0-9'\s]/g, ' ')
+        .replace(/\b(llc|inc|corp|ltd|co|the|and|of)\b/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function businessNamesMatch(scanName: string, resultName: string): boolean {
+    const normScan = normalizeBusinessName(scanName);
+    const normResult = normalizeBusinessName(resultName);
+    if (!normScan || !normResult) return false;
+    if (normScan === normResult) return true;
+    if (normResult.includes(normScan) || normScan.includes(normResult)) return true;
+    const scanTokens = normScan.split(' ').filter(t => t.length > 1);
+    const resultTokens = new Set(normResult.split(' ').filter(t => t.length > 1));
+    if (scanTokens.length > 0) {
+        const matchCount = scanTokens.filter(t => resultTokens.has(t)).length;
+        if (matchCount / scanTokens.length >= 0.8) return true;
+    }
+    return false;
+}
+
 export function BusinessCard({ biz, scan, compact = false }: BusinessCardProps) {
     const [expanded, setExpanded] = useState(false);
     const [copiedId, setCopiedId] = useState<string | null>(null);
-    const isTarget = scan.businessName && biz.name.toLowerCase().includes(scan.businessName.toLowerCase());
+    const isTarget = scan.businessName && businessNamesMatch(scan.businessName, biz.name);
 
     const copyToClipboard = (text: string, id: string) => {
         navigator.clipboard.writeText(text);

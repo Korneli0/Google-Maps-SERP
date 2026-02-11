@@ -65,6 +65,19 @@ cd Google-Maps-SERP
 install_windows.bat
 ```
 
+### Update Instructions
+To update to the latest version with one click:
+
+#### macOS
+```bash
+./update_mac.sh
+```
+
+#### Windows
+```powershell
+update_windows.bat
+```
+
 ### After Installation
 
 To start GeoRanker after installation:

@@ -198,12 +198,21 @@ export async function runScan(scanId: string) {
             const { locale, timezoneId } = getRegionalSettings(scan!.centerLat, scan!.centerLng);
 
             // Randomize viewport slightly to reduce fingerprinting
-            const widthJitter = Math.floor(Math.random() * 40) - 20; // ±20px
-            const heightJitter = Math.floor(Math.random() * 20) - 10; // ±10px
+            const widthJitter = Math.floor(Math.random() * 100) - 50;
+            const heightJitter = Math.floor(Math.random() * 100) - 50;
+
+            // Rotate User Agents
+            const userAgents = [
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0'
+            ];
+            const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];
 
             const ctx = await b.newContext({
-                viewport: { width: 1280 + widthJitter, height: 800 + heightJitter },
-                userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                viewport: { width: 1366 + widthJitter, height: 768 + heightJitter },
+                userAgent: randomUA,
                 locale,
                 timezoneId,
                 // Start with zero state — no cookies, no storage
@@ -212,18 +221,35 @@ export async function runScan(scanId: string) {
                     'Accept-Language': 'en-US,en;q=0.9',
                     'DNT': '1',           // Do Not Track
                     'Sec-GPC': '1',       // Global Privacy Control
+                    'Upgrade-Insecure-Requests': '1',
                 },
                 // Disable service workers to prevent caching
                 serviceWorkers: 'block',
+                // Permissions: Geolocation is critical
+                permissions: ['geolocation'],
+                geolocation: { latitude: lat, longitude: lng }
             });
-
-            await ctx.grantPermissions(['geolocation']);
-            await ctx.setGeolocation({ latitude: lat, longitude: lng });
 
             // Clear all storage as extra safety
             await ctx.clearCookies();
 
             const pg = await ctx.newPage();
+
+            // Anti-detection: Add random mouse movements
+            await pg.evaluate(() => {
+                const moveMouse = () => {
+                    const event = new MouseEvent('mousemove', {
+                        'view': window,
+                        'bubbles': true,
+                        'cancelable': true,
+                        'clientX': Math.random() * window.innerWidth,
+                        'clientY': Math.random() * window.innerHeight
+                    });
+                    document.dispatchEvent(event);
+                };
+                setInterval(moveMouse, 1000);
+            });
+
             return { context: ctx, page: pg };
         }
 
@@ -302,8 +328,22 @@ export async function runScan(scanId: string) {
             let rank = null;
             let targetName = null;
 
-            if (scan.businessName) {
-                // Use normalized matching instead of naive includes()
+            if (scan.placeId) {
+                // Precision matching using Google Place ID
+                const match = results.find(r => r.placeId === scan.placeId || r.cid === scan.placeId); // Handle case where user provided CID as ID
+                if (match) {
+                    rank = match.rank;
+                    targetName = match.name;
+                    // Auto-correct business name if we have a better one
+                    if (!scan.businessName) {
+                        await prisma.scan.update({
+                            where: { id: scan.id },
+                            data: { businessName: match.name }
+                        });
+                    }
+                }
+            } else if (scan.businessName) {
+                // Fallback to name matching
                 const match = results.find(r => businessNamesMatch(scan.businessName!, r.name));
                 if (match) {
                     rank = match.rank;
@@ -318,7 +358,9 @@ export async function runScan(scanId: string) {
                     lng: point.lng,
                     topResults: JSON.stringify(results),
                     rank,
-                    targetName
+                    targetName,
+                    placeId: rank ? (results.find(r => r.rank === rank)?.placeId) : null,
+                    cid: rank ? (results.find(r => r.rank === rank)?.cid) : null
                 },
             });
             await logger.debug(`Captured point ${point.lat},${point.lng}. Target Rank: ${rank || 'N/A'} (${results.length} results)`, 'SCANNER');

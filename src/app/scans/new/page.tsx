@@ -179,7 +179,8 @@ export default function NewScanPage() {
                     businessName: data.business.name,
                     address: data.business.address || prev.address,
                     centerLat: data.business.lat || prev.centerLat,
-                    centerLng: data.business.lng || prev.centerLng
+                    centerLng: data.business.lng || prev.centerLng,
+                    placeId: data.business.placeId
                 }));
                 if (!urlOverride) setLookupUrl('');
                 setIsUrlImport(false);
@@ -198,7 +199,8 @@ export default function NewScanPage() {
         setFormData(prev => ({
             ...prev,
             businessName: biz.name,
-            address: biz.address || prev.address
+            address: biz.address || prev.address,
+            placeId: biz.placeId
         }));
         setIsManualValue(false);
         setLookupResults([]);
@@ -220,6 +222,7 @@ export default function NewScanPage() {
                     customPoints,
                     lat: formData.centerLat,
                     lng: formData.centerLng,
+                    placeId: (formData as any).placeId,
                 }),
             });
 

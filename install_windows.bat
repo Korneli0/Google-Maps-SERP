@@ -71,6 +71,13 @@ echo       [32mPlaywright Chromium installed[0m
 REM Step 5: Setup database
 echo.
 echo [33m[4/6][0m Setting up SQLite database...
+
+if not exist ".env" (
+    echo [33mCreating default configuration (.env)...[0m
+    echo DATABASE_URL="file:./dev.db" > .env
+    echo       [32m.env created[0m
+)
+
 call npx prisma generate
 call npx prisma db push
 echo       [32mDatabase initialized[0m

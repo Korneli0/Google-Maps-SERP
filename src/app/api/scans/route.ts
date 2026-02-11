@@ -26,7 +26,8 @@ export async function POST(req: Request) {
             shape,
             customPoints,
             lat,
-            lng
+            lng,
+            placeId
         } = await req.json();
 
         // Use provided coordinates or default to Chicago (Mock)
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
                 customPoints: customPoints ? JSON.stringify(customPoints) : null,
                 frequency: frequency || 'ONCE',
                 businessName: businessName || undefined,
+                placeId: (req as any).placeId || undefined, // Will be extracted from request body below
                 status: 'PENDING',
             },
         });

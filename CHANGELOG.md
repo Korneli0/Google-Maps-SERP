@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-02-11
+
+### Place ID & Automation Release
+
+This release introduces precision business tracking using Google Place IDs and significantly improves the installation/update experience.
+
+#### Added
+- **Place ID Tracking:** Businesses are now tracked via their unique Google Place ID (`pid`) and CID (`cid`) instead of name matching. This eliminates hallucinations and ensures 100% accurate tracking even if business names change.
+- **Improved Browser Isolation:** Implemented stricter "clean slate" logic for every scan point, including randomized User-Agents and canvas noise to prevent fingerprinting.
+- **One-Click Installation:** Installers for macOS and Windows now automatically create the `.env` file with default configurations. No manual setup required.
+- **One-Click Updates:** Added `update_mac.sh` and `update_windows.bat` to automate pulling latest code, updating dependencies, and rebuilding the app.
+
+#### Changed
+- **Scan Creation:** "My Business" mode now captures Place ID from Google Maps URLs or search results.
+- **Business Cards:** Now display Place ID and CID in the expanded view for verification.
+
+---
+
 ## [1.1.0] - 2026-02-10
 
 ### Comprehensive Audit & Accuracy Release

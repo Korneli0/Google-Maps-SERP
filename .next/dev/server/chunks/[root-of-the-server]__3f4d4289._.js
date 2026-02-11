@@ -128,11 +128,33 @@ async function PATCH(request, { params }) {
     try {
         const { id } = await params;
         const body = await request.json();
+        // Whitelist only fields that should be updatable via PATCH
+        const allowedFields = [
+            'keyword',
+            'businessName',
+            'radius',
+            'frequency',
+            'gridSize',
+            'shape'
+        ];
+        const safeData = {};
+        for (const key of allowedFields){
+            if (body[key] !== undefined) {
+                safeData[key] = body[key];
+            }
+        }
+        if (Object.keys(safeData).length === 0) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: 'No valid fields to update'
+            }, {
+                status: 400
+            });
+        }
         const scan = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].scan.update({
             where: {
                 id
             },
-            data: body
+            data: safeData
         });
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(scan);
     } catch (error) {

@@ -67,6 +67,14 @@ echo -e "       ${GREEN}✓ Playwright Chromium installed${NC}"
 # Step 5: Setup database
 echo ""
 echo -e "${YELLOW}[4/6]${NC} Setting up SQLite database..."
+
+# Auto-create .env if missing
+if [ ! -f ".env" ]; then
+    echo -e "       ${YELLOW}Creating default configuration (.env)...${NC}"
+    echo 'DATABASE_URL="file:./dev.db"' > .env
+    echo -e "       ${GREEN}✓ .env created${NC}"
+fi
+
 npx prisma generate --quiet
 npx prisma db push --quiet
 echo -e "       ${GREEN}✓ Database initialized${NC}"

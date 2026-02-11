@@ -21,6 +21,7 @@ model Scan {
   frequency   String      @default("ONCE") // ONCE, DAILY, WEEKLY
   nextRun     DateTime?
   businessName String?     // Name of business to track ranking for (optional)
+  placeId     String?     // Google Place ID for accurate tracking
   results     Result[]
 
   @@index([status])
@@ -36,6 +37,8 @@ model Result {
   lng          Float
   rank         Int?     // Rank of the target business (null if not found)
   targetName   String?  // Target business name to track
+  placeId      String?  // Google Place ID of the result (found business)
+  cid          String?  // Google CID of the result
   topResults   String   // List of top 20 businesses found at this point (JSON string)
   capturedAt   DateTime @default(now())
 

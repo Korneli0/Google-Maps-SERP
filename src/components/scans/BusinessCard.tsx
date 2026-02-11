@@ -284,21 +284,21 @@ export function BusinessCard({ biz, scan, compact = false }: BusinessCardProps) 
                                 ) : (
                                     <Copy size={10} />
                                 )}
-                                CID
+                                <span className="font-mono">CID: {biz.cid}</span>
                             </button>
                         )}
                         {biz.placeId && (
                             <>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); copyToClipboard(biz.placeId!, 'placeId'); }}
-                                    className="flex items-center gap-1.5 px-2 py-1 bg-gray-100 rounded text-[10px] font-medium text-gray-600 hover:bg-gray-200 transition-colors"
+                                    className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 border border-blue-100 rounded text-[10px] font-medium text-blue-700 hover:bg-blue-100 transition-colors"
                                 >
                                     {copiedId === 'placeId' ? (
                                         <CheckCircle2 size={10} className="text-green-500" />
                                     ) : (
                                         <Copy size={10} />
                                     )}
-                                    Place ID
+                                    <span className="font-mono font-bold">PID: {biz.placeId}</span>
                                 </button>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); copyToClipboard(generateReviewLink(biz.placeId!), 'review'); }}

@@ -64,3 +64,228 @@ Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
 [00:24:05.947] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[01:29:17.963] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /scans/new. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[01:29:17.963] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans/new. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[01:30:29.919] Server  LOG     [INFO] [API] Looking up business from URL: https://www.google.com/maps/place/CASH+FOR+JUNK+CARS+NEAR+ME/data=!4m2!3m1!1s0x0:0x1439c7146d87c622?sa=X&ved=1t%3A2428&hl=en&ictx=111
+[01:30:33.205] Server  LOG     [DEBUG] [API] URL Lookup result: CASH FOR JUNK CARS NEAR ME at null,null
+[01:31:37.162] Server  LOG     Geocoding city boundary for: Chicago, Illinois, United States
+[01:31:44.681] Server  ERROR   Smart Grid Fetch Error: Error: Overpass API failed: Gateway Timeout
+[01:32:12.297] Server  LOG     Geocoding city boundary for: Chicago, Illinois, United States
+[01:32:19.440] Server  ERROR   Smart Grid Fetch Error: Error: Overpass API failed: Gateway Timeout
+[01:32:22.450] Server  LOG     Geocoding city boundary for: Chicago, Illinois, United States
+[01:32:38.391] Server  LOG     Geocoding city boundary for: Chicago, Illinois, United States
+[01:32:47.445] Server  ERROR   Smart Grid Fetch Error: Error: Overpass API failed: Gateway Timeout
+[01:32:50.905] Server  LOG     Geocoding city boundary for: Chicago, Illinois, United States
+[01:32:57.493] Server  ERROR   Smart Grid Fetch Error: Error: Overpass API failed: Gateway Timeout
+[01:35:20.536] Server  LOG     [INFO] [API] New scan created: "cash for junk cars"
+[01:35:20.537] Server  LOG     [INFO] [SCANNER] [Launcher] Initializing scanner process...
+[01:35:20.542] Server  LOG     [INFO] [SCANNER] [Launcher] Status set to RUNNING for keyword: "cash for junk cars"
+[01:35:20.543] Server  LOG     [DEBUG] [SCANNER] [Launcher] Generated 49 coordinates for scan.
+[01:35:20.738] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /scans/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[01:35:20.738] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[01:35:20.739] Server  LOG     [DEBUG] [SCANNER] Launching browser...
+[01:35:21.141] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.75360589265301,-87.81875684296534
+[01:35:42.582] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:35:42.591] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:35:42.599] Server  LOG     [DEBUG] [SCANNER] Captured point 41.75360589265301,-87.81875684296534. Target Rank: 18 (20 results)
+[01:35:45.539] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.75360589265301,-87.7784866440169
+[01:36:05.587] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:36:05.602] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:36:05.609] Server  LOG     [DEBUG] [SCANNER] Captured point 41.75360589265301,-87.7784866440169. Target Rank: 17 (20 results)
+[01:36:08.319] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.75360589265301,-87.73821644506846
+[01:36:28.545] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:36:28.553] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:36:28.557] Server  LOG     [DEBUG] [SCANNER] Captured point 41.75360589265301,-87.73821644506846. Target Rank: 7 (20 results)
+[01:36:33.604] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.75360589265301,-87.69794624612001
+[01:36:53.424] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:36:53.435] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:36:53.441] Server  LOG     [DEBUG] [SCANNER] Captured point 41.75360589265301,-87.69794624612001. Target Rank: 5 (20 results)
+[01:36:57.312] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.75360589265301,-87.65767604717156
+[01:37:16.705] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:37:16.713] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:37:16.718] Server  LOG     [DEBUG] [SCANNER] Captured point 41.75360589265301,-87.65767604717156. Target Rank: 3 (20 results)
+[01:37:21.311] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.75360589265301,-87.61740584822313
+[01:37:40.805] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:37:40.816] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:37:40.824] Server  LOG     [DEBUG] [SCANNER] Captured point 41.75360589265301,-87.61740584822313. Target Rank: 5 (20 results)
+[01:37:44.408] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.75360589265301,-87.57713564927468
+[01:38:05.065] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:38:05.073] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:38:05.078] Server  LOG     [DEBUG] [SCANNER] Captured point 41.75360589265301,-87.57713564927468. Target Rank: 3 (20 results)
+[01:38:08.486] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.783605922653045,-87.81875684296534
+[01:38:29.727] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:38:29.736] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:38:29.742] Server  LOG     [DEBUG] [SCANNER] Captured point 41.783605922653045,-87.81875684296534. Target Rank: 17 (20 results)
+[01:38:33.665] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.783605922653045,-87.7784866440169
+[01:38:53.393] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:38:53.402] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:38:53.408] Server  LOG     [DEBUG] [SCANNER] Captured point 41.783605922653045,-87.7784866440169. Target Rank: 12 (20 results)
+[01:38:56.897] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.783605922653045,-87.73821644506846
+[01:39:17.617] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:39:17.626] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:39:17.632] Server  LOG     [DEBUG] [SCANNER] Captured point 41.783605922653045,-87.73821644506846. Target Rank: 8 (20 results)
+[01:39:22.357] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.783605922653045,-87.69794624612001
+[01:39:42.697] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:39:42.703] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:39:42.709] Server  LOG     [DEBUG] [SCANNER] Captured point 41.783605922653045,-87.69794624612001. Target Rank: 6 (20 results)
+[01:39:46.360] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.783605922653045,-87.65767604717156
+[01:40:08.210] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:40:08.216] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:40:08.221] Server  LOG     [DEBUG] [SCANNER] Captured point 41.783605922653045,-87.65767604717156. Target Rank: 6 (20 results)
+[01:40:12.930] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.783605922653045,-87.61740584822313
+[01:40:35.590] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:40:35.604] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:40:35.611] Server  LOG     [DEBUG] [SCANNER] Captured point 41.783605922653045,-87.61740584822313. Target Rank: 5 (20 results)
+[01:40:40.560] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.72824445689327,-87.64755249023438
+[01:41:01.163] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:41:01.174] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:41:01.179] Server  LOG     [DEBUG] [SCANNER] Captured point 41.72824445689327,-87.64755249023438. Target Rank: 5 (20 results)
+[01:41:04.754] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.81360595265307,-87.81875684296534
+[01:41:23.577] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:41:23.591] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:41:23.599] Server  LOG     [DEBUG] [SCANNER] Captured point 41.81360595265307,-87.81875684296534. Target Rank: 16 (20 results)
+[01:41:27.061] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.81360595265307,-87.7784866440169
+[01:41:47.012] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:41:47.019] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:41:47.025] Server  LOG     [DEBUG] [SCANNER] Captured point 41.81360595265307,-87.7784866440169. Target Rank: 14 (20 results)
+[01:41:50.558] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.81360595265307,-87.73821644506846
+[01:42:10.716] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:42:10.724] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:42:10.730] Server  LOG     [DEBUG] [SCANNER] Captured point 41.81360595265307,-87.73821644506846. Target Rank: 5 (20 results)
+[01:42:13.857] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.81360595265307,-87.69794624612001
+[01:42:35.412] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:42:35.428] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:42:35.438] Server  LOG     [DEBUG] [SCANNER] Captured point 41.81360595265307,-87.69794624612001. Target Rank: 5 (20 results)
+[01:42:37.702] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.81360595265307,-87.65767604717156
+[01:42:57.216] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:42:57.228] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:42:57.235] Server  LOG     [DEBUG] [SCANNER] Captured point 41.81360595265307,-87.65767604717156. Target Rank: 4 (20 results)
+[01:43:00.969] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.81360595265307,-87.61740584822313
+[01:43:20.805] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:43:20.820] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:43:20.827] Server  LOG     [DEBUG] [SCANNER] Captured point 41.81360595265307,-87.61740584822313. Target Rank: 5 (20 results)
+[01:43:25.646] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.694372665648096,-87.70248413085939
+[01:43:47.379] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:43:47.387] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:43:47.397] Server  LOG     [DEBUG] [SCANNER] Captured point 41.694372665648096,-87.70248413085939. Target Rank: 4 (20 results)
+[01:43:50.896] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.8436059826531,-87.81875684296534
+[01:44:10.679] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:44:10.690] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:44:10.696] Server  LOG     [DEBUG] [SCANNER] Captured point 41.8436059826531,-87.81875684296534. Target Rank: N/A (20 results)
+[01:44:15.696] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.8436059826531,-87.7784866440169
+[01:44:37.077] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:44:37.086] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:44:37.091] Server  LOG     [DEBUG] [SCANNER] Captured point 41.8436059826531,-87.7784866440169. Target Rank: 18 (20 results)
+[01:44:41.135] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.8436059826531,-87.73821644506846
+[01:45:01.480] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:45:01.487] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:45:01.492] Server  LOG     [DEBUG] [SCANNER] Captured point 41.8436059826531,-87.73821644506846. Target Rank: 16 (20 results)
+[01:45:05.315] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.8436059826531,-87.69794624612001
+[01:45:27.328] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:45:27.336] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:45:27.341] Server  LOG     [DEBUG] [SCANNER] Captured point 41.8436059826531,-87.69794624612001. Target Rank: 15 (20 results)
+[01:45:31.630] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.8436059826531,-87.65767604717156
+[01:45:50.072] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:45:50.082] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:45:50.087] Server  LOG     [DEBUG] [SCANNER] Captured point 41.8436059826531,-87.65767604717156. Target Rank: 10 (20 results)
+[01:45:53.736] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.8436059826531,-87.61740584822313
+[01:46:13.121] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:46:13.131] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:46:13.137] Server  LOG     [DEBUG] [SCANNER] Captured point 41.8436059826531,-87.61740584822313. Target Rank: 10 (20 results)
+[01:46:15.496] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.723077284244546,-87.80685424804689
+[01:46:37.672] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:46:37.680] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:46:37.685] Server  LOG     [DEBUG] [SCANNER] Captured point 41.723077284244546,-87.80685424804689. Target Rank: N/A (20 results)
+[01:46:39.910] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.873606012653134,-87.81875684296534
+[01:46:59.969] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:46:59.976] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:46:59.982] Server  LOG     [DEBUG] [SCANNER] Captured point 41.873606012653134,-87.81875684296534. Target Rank: N/A (20 results)
+[01:47:03.202] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.873606012653134,-87.7784866440169
+[01:47:22.297] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:47:22.305] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:47:22.310] Server  LOG     [DEBUG] [SCANNER] Captured point 41.873606012653134,-87.7784866440169. Target Rank: N/A (20 results)
+[01:47:26.045] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.873606012653134,-87.73821644506846
+[01:47:46.466] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:47:46.473] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:47:46.479] Server  LOG     [DEBUG] [SCANNER] Captured point 41.873606012653134,-87.73821644506846. Target Rank: N/A (20 results)
+[01:47:51.028] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.873606012653134,-87.69794624612001
+[01:48:12.151] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:48:12.158] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:48:12.163] Server  LOG     [DEBUG] [SCANNER] Captured point 41.873606012653134,-87.69794624612001. Target Rank: N/A (20 results)
+[01:48:16.688] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.873606012653134,-87.65767604717156
+[01:48:36.464] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:48:36.471] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:48:36.476] Server  LOG     [DEBUG] [SCANNER] Captured point 41.873606012653134,-87.65767604717156. Target Rank: N/A (20 results)
+[01:48:40.825] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.873606012653134,-87.61740584822313
+[01:49:00.247] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:49:00.254] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:49:00.259] Server  LOG     [DEBUG] [SCANNER] Captured point 41.873606012653134,-87.61740584822313. Target Rank: N/A (20 results)
+[01:49:04.982] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.6953595999422,-87.77114868164062
+[01:49:24.949] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:49:24.956] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:49:24.961] Server  LOG     [DEBUG] [SCANNER] Captured point 41.6953595999422,-87.77114868164062. Target Rank: N/A (20 results)
+[01:49:29.841] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.903606042653166,-87.81875684296534
+[01:49:48.040] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:49:48.047] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:49:48.052] Server  LOG     [DEBUG] [SCANNER] Captured point 41.903606042653166,-87.81875684296534. Target Rank: N/A (20 results)
+[01:49:52.657] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.903606042653166,-87.7784866440169
+[01:50:11.360] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:50:11.369] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:50:11.375] Server  LOG     [DEBUG] [SCANNER] Captured point 41.903606042653166,-87.7784866440169. Target Rank: N/A (20 results)
+[01:50:14.904] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.903606042653166,-87.73821644506846
+[01:50:35.160] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:50:35.170] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:50:35.175] Server  LOG     [DEBUG] [SCANNER] Captured point 41.903606042653166,-87.73821644506846. Target Rank: N/A (20 results)
+[01:50:38.048] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.903606042653166,-87.69794624612001
+[01:50:55.787] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:50:55.794] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:50:55.801] Server  LOG     [DEBUG] [SCANNER] Captured point 41.903606042653166,-87.69794624612001. Target Rank: N/A (20 results)
+[01:50:58.828] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.903606042653166,-87.65767604717156
+[01:51:16.509] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:51:16.516] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:51:16.522] Server  LOG     [DEBUG] [SCANNER] Captured point 41.903606042653166,-87.65767604717156. Target Rank: N/A (20 results)
+[01:51:21.363] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.73021760222189,-87.60841369628908
+[01:51:41.489] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:51:41.497] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:51:41.503] Server  LOG     [DEBUG] [SCANNER] Captured point 41.73021760222189,-87.60841369628908. Target Rank: 5 (20 results)
+[01:51:45.928] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.707138966352055,-87.66677856445312
+[01:52:06.484] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:52:06.490] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:52:06.496] Server  LOG     [DEBUG] [SCANNER] Captured point 41.707138966352055,-87.66677856445312. Target Rank: 4 (20 results)
+[01:52:10.061] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.93360607265319,-87.81875684296534
+[01:52:31.486] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:52:31.492] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:52:31.497] Server  LOG     [DEBUG] [SCANNER] Captured point 41.93360607265319,-87.81875684296534. Target Rank: N/A (20 results)
+[01:52:34.217] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.93360607265319,-87.7784866440169
+[01:52:55.253] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:52:55.260] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:52:55.265] Server  LOG     [DEBUG] [SCANNER] Captured point 41.93360607265319,-87.7784866440169. Target Rank: N/A (20 results)
+[01:52:58.737] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.93360607265319,-87.73821644506846
+[01:53:18.282] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:53:18.288] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:53:18.293] Server  LOG     [DEBUG] [SCANNER] Captured point 41.93360607265319,-87.73821644506846. Target Rank: N/A (20 results)
+[01:53:23.342] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.93360607265319,-87.69794624612001
+[01:53:44.604] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:53:44.614] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:53:44.619] Server  LOG     [DEBUG] [SCANNER] Captured point 41.93360607265319,-87.69794624612001. Target Rank: N/A (20 results)
+[01:53:47.667] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.93360607265319,-87.65767604717156
+[01:54:08.358] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:54:08.365] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:54:08.370] Server  LOG     [DEBUG] [SCANNER] Captured point 41.93360607265319,-87.65767604717156. Target Rank: N/A (20 results)
+[01:54:11.170] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.72866004493334,-87.6976776123047
+[01:54:30.425] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:54:30.436] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:54:30.443] Server  LOG     [DEBUG] [SCANNER] Captured point 41.72866004493334,-87.6976776123047. Target Rank: 10 (20 results)
+[01:54:33.090] Server  LOG     [DEBUG] [SCANNER] [Scraper] Navigating to Google Maps for "cash for junk cars" at 41.72660889651722,-87.75466918945312
+[01:54:51.956] Server  LOG     [DEBUG] [SCANNER] [Scraper] Using DOM fallback extraction...
+[01:54:51.966] Server  LOG     [DEBUG] [SCANNER] [Scraper] Extracted 20 entities.
+[01:54:51.972] Server  LOG     [DEBUG] [SCANNER] Captured point 41.72660889651722,-87.75466918945312. Target Rank: 16 (20 results)
+[01:54:55.234] Server  LOG     [INFO] [SCANNER] Scan sequence completed successfully for "cash for junk cars"
+[21:16:54.752] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /scans/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[21:16:54.752] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /scans/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport

@@ -184,25 +184,7 @@ export function computeLegitimacy(reviews: EnrichedReview[]): LegitimacyMetrics 
     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
     const lowEffort = reviews.filter(r => r.wordCount < 5);
     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
-    const localGuides = reviews.filter(r => r.localGuideLevel && r.localGuideLevel > 0);
 
-    // Detailed local guide distribution
-    const guideLevels: Record<string, number> = {};
-    reviews.forEach(r => {
-        if (!r.localGuideLevel || r.localGuideLevel === 0) {
-            guideLevels['Not a Local Guide'] = (guideLevels['Not a Local Guide'] || 0) + 1;
-        } else {
-            const key = `Level ${r.localGuideLevel}`;
-            guideLevels[key] = (guideLevels[key] || 0) + 1;
-        }
-    });
-    const lgDist = Object.entries(guideLevels)
-        .map(([level, count]) => ({ level, count, percentage: parseFloat((count / reviews.length * 100).toFixed(1)) }))
-        .sort((a, b) => {
-            if (a.level === 'Not a Local Guide') return 1;
-            if (b.level === 'Not a Local Guide') return -1;
-            return a.level.localeCompare(b.level);
-        });
 
     // Velocity spikes
     const monthly = groupByMonth(reviews);
@@ -267,9 +249,7 @@ export function computeLegitimacy(reviews: EnrichedReview[]): LegitimacyMetrics 
     return {
         overallTrustScore: Math.round(trustScore), totalSuspicious: suspicious.length,
         suspiciousPercentage: parseFloat((suspicious.length / reviews.length * 100).toFixed(1)),
-        localGuideCount: localGuides.length,
-        localGuidePercentage: parseFloat((localGuides.length / reviews.length * 100).toFixed(1)),
-        localGuideDistribution: lgDist, noProfileReviewers: oneReviewOnly.length,
+        noProfileReviewers: oneReviewOnly.length,
         oneReviewOnly: oneReviewOnly.length,
         oneReviewPercentage: parseFloat((oneReviewOnly.length / reviews.length * 100).toFixed(1)),
         lowEffortReviews: lowEffort.length, lowEffortPercentage: parseFloat((lowEffort.length / reviews.length * 100).toFixed(1)),
@@ -465,9 +445,9 @@ export function computeCompetitive(reviews: EnrichedReview[], overview: any): Co
 }
 
 export function computeReviewer(reviews: EnrichedReview[]): ReviewerMetrics {
-    const reviewerMap: Record<string, { count: number; totalRating: number; isLocalGuide: boolean }> = {};
+    const reviewerMap: Record<string, { count: number; totalRating: number }> = {};
     reviews.forEach(r => {
-        if (!reviewerMap[r.reviewerName]) reviewerMap[r.reviewerName] = { count: 0, totalRating: 0, isLocalGuide: !!(r.localGuideLevel && r.localGuideLevel > 0) };
+        if (!reviewerMap[r.reviewerName]) reviewerMap[r.reviewerName] = { count: 0, totalRating: 0 };
         reviewerMap[r.reviewerName].count++;
         reviewerMap[r.reviewerName].totalRating += r.rating;
     });
@@ -479,7 +459,7 @@ export function computeReviewer(reviews: EnrichedReview[]): ReviewerMetrics {
     const topReviewers = Object.entries(reviewerMap)
         .sort((a, b) => b[1].count - a[1].count)
         .slice(0, 10)
-        .map(([name, data]) => ({ name, reviewCount: data.count, avgRating: parseFloat((data.totalRating / data.count).toFixed(1)), isLocalGuide: data.isLocalGuide }));
+        .map(([name, data]) => ({ name, reviewCount: data.count, avgRating: parseFloat((data.totalRating / data.count).toFixed(1)) }));
 
     const returning = Object.values(reviewerMap).filter(r => r.count > 1).length;
 

@@ -71,36 +71,41 @@ export async function POST(req: Request) {
             // Total reviews — multiple approaches
             let totalReviews = 0;
 
-            // Approach 1: aria-label
-            const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+            // Approach 1: Primary aria-label or specific span
+            const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
             if (reviewCountEl) {
-                const match = reviewCountEl.textContent?.match(/[\d,.]+/);
-                if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+                const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+                if (match) totalReviews = parseInt(match);
             }
 
-            // Approach 2: number in parentheses like (1,700)
+            // Approach 2: Deep search in common containers
             if (totalReviews === 0) {
-                const allSpans = document.querySelectorAll('div.F7nice span, span.RDApEe, button[jsaction*="review"] span');
-                for (const span of allSpans) {
-                    const txt = span.textContent || '';
-                    // Must be in parentheses to avoid matching the rating (4.3)
-                    const m = txt.match(/\(([\d,.\.\u066c]+)\)/);
-                    if (m) {
-                        const num = parseInt(m[1].replace(/[^\d]/g, ''));
-                        if (num >= 10 && num < 1000000) { totalReviews = num; break; }
+                const searchContainers = ['div.F7nice', 'div.jANrlb', 'div.TIvO8b', 'button[jsaction*="review"]'];
+                for (const selector of searchContainers) {
+                    const container = document.querySelector(selector);
+                    if (!container) continue;
+
+                    const text = container.textContent || '';
+                    // Look for numbers like (1,234) or 1,234 reviews
+                    const match = text.match(/\(([\d,.\s]+)\)/) || text.match(/([\d,.\s]+)\s*(?:reviews|Critiques|Bewertungen)/i);
+                    if (match) {
+                        const num = parseInt(match[1].replace(/[^\d]/g, ''));
+                        if (num > 0 && num < 1000000) { totalReviews = num; break; }
                     }
                 }
             }
 
-            // Approach 3: tab button text
+            // Approach 3: All buttons and spans (broadest)
             if (totalReviews === 0) {
-                const tabBtns = document.querySelectorAll('button[role="tab"]');
-                for (const btn of tabBtns) {
-                    const txt = btn.textContent || '';
-                    const m = txt.match(/([\d,.\.]+)/);
-                    if (m) {
-                        const num = parseInt(m[1].replace(/[^\d]/g, ''));
-                        if (num > 10) { totalReviews = num; break; }
+                const allElements = Array.from(document.querySelectorAll('button, span, div'));
+                for (const el of allElements) {
+                    const txt = el.textContent || '';
+                    if (txt.length < 50 && txt.toLocaleLowerCase().includes('review')) {
+                        const m = txt.match(/([\d,.\s]+)/);
+                        if (m) {
+                            const num = parseInt(m[1].replace(/[^\d]/g, ''));
+                            if (num > 5 && num < 1000000) { totalReviews = num; break; }
+                        }
                     }
                 }
             }

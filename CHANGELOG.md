@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-02-12
+
+### Review Intel & Deep Scraping Release
+
+This release transforms the Review Intelligence module with deep scraping capabilities, source attribution for every insight, and robust handling for large business profiles (1000+ reviews).
+
+#### Added
+- **Source Attribution:** Every insight (Strengths, Weaknesses, Sentiments, Themes) now includes an expandable "Source Reviews" section showing the exact reviews that generated the finding.
+- **Deep Scraping for Large Businesses:** Completely rewritten scraper logic to handle businesses with 1700+ reviews. Includes robust retry logic, "Load More" handling, and unique ID tracking.
+- **CSV Export:** Added ability to export all review data and computed metrics to a formatted CSV file.
+- **Client-Side Local Guide Fallback:** Ensures Local Guide distribution graphs render even if API data is incomplete, by computing from the review list on the fly.
+
+#### Fixed
+- **"Zero Reviews" Bug:** Fixed a critical issue where looking up businesses would sometimes return 0 reviews due to DOM selector changes or timing issues.
+- **Duplicate Reviews:** Implemented a multi-layer deduplication strategy (Strict ID matching + Nested element filtering) to eliminate duplicate reviews caused by Google's nested DOM structure.
+- **Preview Count Accuracy:** Fixed a regex bug in the preview route where ratings (e.g., "4.3") were sometimes misread as review counts (e.g., "43").
+
+---
 ## [1.2.0] - 2026-02-11
 
 ### Place ID & Automation Release

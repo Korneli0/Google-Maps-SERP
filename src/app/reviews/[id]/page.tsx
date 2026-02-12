@@ -8,7 +8,7 @@ import {
     AlertTriangle, CheckCircle, Users, BarChart3, Clock, Target,
     ThumbsUp, ThumbsDown, AlertCircle, Loader2, Search,
     Download, MapPin, ChevronDown, ChevronUp, Filter, FileText,
-    Heart, Zap, Lightbulb, Flag, Eye, Award, Flame, Gauge,
+    Heart, Zap, Lightbulb, Flag, Eye, ImageIcon, Award, Flame, Gauge,
     TrendingDown, ShieldAlert, ShieldCheck, UserCheck, UserX,
     MessageCircle, Copy, Crosshair, Sparkles, CalendarDays,
     ArrowUpRight, ArrowDownRight, Minus, Camera, Hash, Quote,
@@ -76,12 +76,12 @@ export default function ReviewResultsPage() {
         const reviews = data.reviews || [];
 
         // Section 1: Reviews
-        const reviewHeaders = ['Reviewer Name', 'Rating', 'Review Text', 'Response Text', 'Date', 'Sentiment', 'Sentiment Score', 'Fake Score', 'Is Fake', 'Local Guide Level', 'Review Count', 'Photo Count'];
+        const reviewHeaders = ['Reviewer Name', 'Rating', 'Review Text', 'Response Text', 'Date', 'Sentiment', 'Sentiment Score', 'Fake Score', 'Is Fake', 'Review Count', 'Photo Count'];
         const reviewRows = reviews.map((r: any) => [
             r.reviewerName || '', r.rating || '', (r.text || '').replace(/[\r\n]+/g, ' ').replace(/"/g, '""'),
             (r.responseText || '').replace(/[\r\n]+/g, ' ').replace(/"/g, '""'),
             r.publishedDate || '', r.sentimentLabel || '', r.sentimentScore ?? '', r.fakeScore ?? '',
-            r.isLikelyFake ? 'Yes' : 'No', r.localGuideLevel || '', r.reviewCount || '', r.photoCount || ''
+            r.isLikelyFake ? 'Yes' : 'No', r.reviewCount || '', r.photoCount || ''
         ]);
 
         // Section 2: Metrics
@@ -295,10 +295,11 @@ export default function ReviewResultsPage() {
                 <h2>📝 All Reviews (${data.reviews?.length || 0})</h2>
                 ${(data.reviews || []).slice(0, 50).map((r: any) => `<div class="review-card">
                     <div class="review-meta">
-                        <span><strong>${r.reviewerName}</strong> ${r.localGuideLevel ? '• Level ' + r.localGuideLevel + ' Guide' : ''}</span>
+                        <span><strong>${r.reviewerName}</strong></span>
                         <span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
                     </div>
                     ${r.text ? `<div style="font-size:11px">${r.text}</div>` : '<div style="font-size:11px;color:#9ca3af"><em>Rating only — no text</em></div>'}
+                    ${r.reviewImage ? `<div style="margin-top:8px;"><img src="${r.reviewImage}" alt="Review image" style="max-width:100px; height:auto; border-radius:4px; border:1px solid #e5e7eb;" /></div>` : ''}
                     ${r.publishedDate ? `<div style="font-size:10px;color:#9ca3af;margin-top:2px">${r.publishedDate}</div>` : ''}
                     ${r.responseText ? `<div class="response"><strong>Owner Response:</strong> ${r.responseText}</div>` : ''}
                 </div>`).join('')}
@@ -925,11 +926,13 @@ export default function ReviewResultsPage() {
                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${r.localGuideLevel ? 'bg-violet-100 text-violet-600' : 'bg-gray-100 text-gray-500'}`}>
                                         {r.reviewerName?.charAt(0) || '?'}
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-semibold text-gray-900">{r.reviewerName}</p>
+                                    <div className="flex-1">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <h4 className="font-bold text-gray-800 text-sm">{r.reviewerName}</h4>
+                                            <span className="text-amber-400 text-xs">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                                        </div>
                                         <div className="flex items-center gap-2 text-[10px] text-gray-500">
-                                            {r.localGuideLevel ? <span className="text-violet-600 font-semibold flex items-center gap-0.5"><MapPin className="w-2.5 h-2.5" /> Level {r.localGuideLevel} Local Guide</span> : <span className="text-gray-400">Not a Local Guide</span>}
-                                            {r.reviewCount ? <span>• {r.reviewCount} reviews</span> : null}
+                                            {r.reviewCount ? <span>{r.reviewCount} reviews</span> : null}
                                             {r.photoCount ? <span>• {r.photoCount} photos</span> : null}
                                             {r.publishedDate ? <span>• {r.publishedDate}</span> : null}
                                         </div>
@@ -942,7 +945,6 @@ export default function ReviewResultsPage() {
                                                 'bg-gray-100 text-gray-600'
                                         }`}>{r.sentimentLabel || 'N/A'}</span>
                                     {r.isLikelyFake && <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-700 flex items-center gap-0.5"><Flag className="w-2.5 h-2.5" /> FLAGGED</span>}
-                                    <span className="text-amber-400 text-sm">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
                                 </div>
                             </div>
 
@@ -953,6 +955,13 @@ export default function ReviewResultsPage() {
                                 <p className="text-xs text-gray-400 italic">Rating only — no text</p>
                             )}
 
+                            {/* Review Image */}
+                            {r.reviewImage && (
+                                <div className="mt-3">
+                                    <img src={r.reviewImage} alt="Review attachment" className="h-20 w-auto rounded-md border border-gray-200 object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(r.reviewImage, '_blank')} />
+                                </div>
+                            )}
+
                             {/* Fake Review Details */}
                             {r.isLikelyFake && (
                                 <div className="mt-2 bg-red-50 rounded-lg p-3 border border-red-200">
@@ -961,7 +970,6 @@ export default function ReviewResultsPage() {
                                         {(() => {
                                             const reasons: string[] = [];
                                             if (!r.text || r.text.length < 20) reasons.push('No or minimal review text');
-                                            if (!r.localGuideLevel) reasons.push('Reviewer is not a Local Guide');
                                             if (r.reviewCount !== undefined && r.reviewCount <= 1) reasons.push('Single-review account (first/only review on Google)');
                                             if (!r.photoCount || r.photoCount === 0) reasons.push('Reviewer has never uploaded any photos');
                                             if ((r.rating === 1 || r.rating === 5) && (!r.text || r.text.length < 30)) reasons.push('Extreme rating with minimal supporting text');
@@ -1064,7 +1072,13 @@ function SourceReviews({ reviews, label }: { reviews: any[]; label?: string }) {
                     {reviews.map((r: any, i: number) => (
                         <div key={i} className="bg-white rounded-lg p-3 border border-gray-100 shadow-sm">
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-semibold text-gray-800">{r.reviewerName}</span>
+                                {r.reviewerUrl ? (
+                                    <a href={r.reviewerUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-blue-600 hover:underline">
+                                        {r.reviewerName}
+                                    </a>
+                                ) : (
+                                    <span className="text-xs font-semibold text-gray-800">{r.reviewerName}</span>
+                                )}
                                 <span className="text-amber-400 text-[10px]">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
                                 {r.sentimentLabel && (
                                     <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold ${r.sentimentLabel === 'POSITIVE' ? 'bg-emerald-100 text-emerald-700' :
@@ -1072,9 +1086,18 @@ function SourceReviews({ reviews, label }: { reviews: any[]; label?: string }) {
                                             'bg-gray-100 text-gray-600'
                                         }`}>{r.sentimentLabel}</span>
                                 )}
-                                {r.localGuideLevel ? <span className="text-[9px] text-violet-600 font-semibold flex items-center gap-0.5"><MapPin className="w-2 h-2" />L{r.localGuideLevel}</span> : null}
+                                {r.reviewImage && (
+                                    <span className="text-[9px] text-blue-600 font-semibold flex items-center gap-0.5">
+                                        <ImageIcon className="w-2 h-2" /> Has Photo
+                                    </span>
+                                )}
                             </div>
                             <p className="text-[11px] text-gray-600 line-clamp-3">{r.text || '(No text)'}</p>
+                            {r.reviewImage && (
+                                <div className="mt-2 mb-1">
+                                    <img src={r.reviewImage} alt="Review attachment" className="h-16 w-auto rounded-md border border-gray-200 object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(r.reviewImage, '_blank')} />
+                                </div>
+                            )}
                             {r.publishedDate && <p className="text-[9px] text-gray-400 mt-1">{r.publishedDate}</p>}
                         </div>
                     ))}

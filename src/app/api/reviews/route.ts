@@ -27,131 +27,155 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-    try {
-        const body = await req.json();
-        const { url, businessName, totalReviews, averageRating, placeId } = body;
+    const encoder = new TextEncoder();
+    const customReadable = new TransformStream();
+    const writer = customReadable.writable.getWriter();
 
-        if (!url || typeof url !== 'string') {
-            return NextResponse.json({ error: 'Business URL is required' }, { status: 400 });
-        }
+    // Helper to send progress logs
+    const sendLog = async (msg: string, type: 'info' | 'error' | 'success' = 'info') => {
+        try {
+            await writer.write(encoder.encode(`data: ${JSON.stringify({ msg, type })}\n\n`));
+        } catch { /* connection closed */ }
+    };
 
-        // Create the analysis record with confirmed business info
-        const analysis = await db.reviewAnalysis.create({
-            data: {
-                businessName: businessName || 'Unknown Business',
-                businessUrl: url,
-                totalReviews: totalReviews || 0,
-                averageRating: averageRating || 0,
-                placeId: placeId || null,
-                status: 'SCRAPING',
-            },
-        });
+    // Helper to send final result
+    const sendResult = async (data: any) => {
+        try {
+            await writer.write(encoder.encode(`data: ${JSON.stringify({ result: data, type: 'complete' })}\n\n`));
+            await writer.close();
+        } catch { /* connection closed */ }
+    };
 
-        // Run scraping + analysis in background
-        runReviewAnalysis(analysis.id, url).catch(async (err) => {
-            console.error(`[REVIEW] Background analysis failed for ${analysis.id}:`, err);
-            try {
-                await db.reviewAnalysis.update({
-                    where: { id: analysis.id },
-                    data: { status: 'FAILED', error: err?.message || 'Unknown error' },
+    // Run analysis loosely detached but piping logs
+    (async () => {
+        try {
+            const body = await req.json();
+            const { url, businessName, totalReviews, averageRating, placeId } = body;
+
+            if (!url || typeof url !== 'string') {
+                await sendLog('Business URL is required', 'error');
+                await writer.close();
+                return;
+            }
+
+            // Create entry
+            await sendLog(`Creating analysis record for "${businessName}"...`);
+            const analysis = await db.reviewAnalysis.create({
+                data: {
+                    businessName: businessName || 'Unknown Business',
+                    businessUrl: url,
+                    totalReviews: totalReviews || 0,
+                    averageRating: averageRating || 0,
+                    placeId: placeId || null,
+                    status: 'SCRAPING',
+                },
+            });
+
+            // Start scraping
+            await sendLog(`Starting scrape for ${url}...`);
+            const { scrapeGoogleReviews } = await import('@/lib/reviewScraper');
+
+            // Pass a progress callback that writes to the stream
+            const onProgress = (msg: string) => sendLog(msg);
+
+            const { business, reviews } = await scrapeGoogleReviews(url, onProgress);
+
+            await sendLog(`Scraped ${reviews.length} reviews. Saving to database...`);
+            await db.reviewAnalysis.update({
+                where: { id: analysis.id },
+                data: {
+                    businessName: business.name,
+                    totalReviews: business.totalReviews,
+                    averageRating: business.averageRating,
+                    placeId: business.placeId,
+                    status: 'ANALYZING',
+                },
+            });
+
+            // Save reviews in chunks to report progress
+            const chunkSize = 100;
+            for (let i = 0; i < reviews.length; i += chunkSize) {
+                const chunk = reviews.slice(i, i + chunkSize);
+                await db.review.createMany({
+                    data: chunk.map(r => ({
+                        analysisId: analysis.id,
+                        reviewerName: r.reviewerName,
+                        reviewerUrl: r.reviewerUrl,
+                        reviewImage: r.reviewImage,
+                        reviewCount: r.reviewCount,
+                        photoCount: r.photoCount,
+                        rating: r.rating,
+                        text: r.text,
+                        publishedDate: r.publishedDate,
+                        responseText: r.responseText,
+                        responseDate: r.responseDate,
+                    }))
                 });
-            } catch { /* ignore */ }
-        });
+                await sendLog(`Saved ${Math.min(i + chunkSize, reviews.length)} / ${reviews.length} reviews...`);
+            }
 
-        return NextResponse.json(analysis);
-    } catch (error: any) {
-        console.error('POST /api/reviews error:', error);
-        return NextResponse.json({ error: 'Failed to start analysis', details: error.message }, { status: 500 });
-    }
-}
+            await sendLog('Running 150+ metric deep analysis...');
+            const { analyzeReviews } = await import('@/lib/reviewAnalyzer');
+            const analysisResult = analyzeReviews(reviews);
 
-async function runReviewAnalysis(analysisId: string, url: string) {
-    try {
-        console.log(`[REVIEW] Starting scrape for ${analysisId}...`);
+            // Sentiment enrichment
+            await sendLog('Analyzing sentiment and fake patterns...');
+            const { analyzeSentiment } = await import('@/lib/sentimentEngine');
+            const dbReviews = await db.review.findMany({
+                where: { analysisId: analysis.id },
+                select: { id: true, text: true, rating: true, reviewCount: true, photoCount: true }
+            });
 
-        const { scrapeGoogleReviews } = await import('@/lib/reviewScraper');
-        const { analyzeReviews } = await import('@/lib/reviewAnalyzer');
+            for (let i = 0; i < dbReviews.length; i++) {
+                const r = dbReviews[i];
+                const sent = analyzeSentiment(r.text, r.rating);
 
-        const { business, reviews } = await scrapeGoogleReviews(url);
+                // Fake score calculation
+                let fakeScore = 0;
+                if (!r.text || r.text.length < 20) fakeScore += 15;
+                // if (!r.localGuideLevel) fakeScore += 10; // Removed: LG check unreliable without deep scrape
+                if (r.reviewCount !== undefined && r.reviewCount <= 1) fakeScore += 20;
+                if (!r.photoCount) fakeScore += 5;
+                if ((r.rating === 1 || r.rating === 5) && (!r.text || r.text.length < 30)) fakeScore += 10;
+                if (r.text && r.rating === 5 && sent.label === 'NEGATIVE') fakeScore += 15;
+                if (r.text && r.rating === 1 && sent.label === 'POSITIVE') fakeScore += 15;
 
-        await db.reviewAnalysis.update({
-            where: { id: analysisId },
-            data: {
-                businessName: business.name,
-                totalReviews: business.totalReviews,
-                averageRating: business.averageRating,
-                placeId: business.placeId,
-                status: 'ANALYZING',
-            },
-        });
+                await db.review.update({
+                    where: { id: r.id },
+                    data: {
+                        sentimentScore: sent.compound,
+                        sentimentLabel: sent.label,
+                        fakeScore: Math.min(fakeScore, 100),
+                        isLikelyFake: fakeScore >= 50,
+                    },
+                });
 
-        console.log(`[REVIEW] Saving ${reviews.length} reviews...`);
-        for (const review of reviews) {
-            await db.review.create({
+                if (i % 200 === 0) await sendLog(`Analyzed ${i} / ${dbReviews.length} reviews...`);
+            }
+
+            await db.reviewAnalysis.update({
+                where: { id: analysis.id },
                 data: {
-                    analysisId,
-                    reviewerName: review.reviewerName,
-                    reviewerUrl: review.reviewerUrl,
-                    localGuideLevel: review.localGuideLevel,
-                    reviewCount: review.reviewCount,
-                    photoCount: review.photoCount,
-                    rating: review.rating,
-                    text: review.text,
-                    publishedDate: review.publishedDate,
-                    responseText: review.responseText,
-                    responseDate: review.responseDate,
+                    analysisData: JSON.stringify(analysisResult),
+                    status: 'COMPLETED',
                 },
             });
+
+            await sendLog(`Analysis complete! Redirecting...`, 'success');
+            await sendResult(analysis);
+
+        } catch (error: any) {
+            console.error('Stream error:', error);
+            await sendLog(`Error: ${error.message}`, 'error');
+            await writer.close();
         }
+    })();
 
-        console.log(`[REVIEW] Running 150+ metric deep analysis...`);
-        const analysisResult = analyzeReviews(reviews);
-
-        // Sentiment enrichment per review using new hybrid engine
-        const { analyzeSentiment } = await import('@/lib/sentimentEngine');
-        const dbReviews = await db.review.findMany({ where: { analysisId } });
-
-        for (let i = 0; i < Math.min(dbReviews.length, reviews.length); i++) {
-            const r = reviews[i];
-            const sent = analyzeSentiment(r.text, r.rating);
-
-            // Fake score calculation with detailed reasons
-            let fakeScore = 0;
-            const fakeReasons: string[] = [];
-            if (!r.text || r.text.length < 20) { fakeScore += 15; fakeReasons.push('No/minimal text'); }
-            if (!r.localGuideLevel) { fakeScore += 10; fakeReasons.push('Not a Local Guide'); }
-            if (r.reviewCount !== undefined && r.reviewCount <= 1) { fakeScore += 20; fakeReasons.push('Single-review account'); }
-            if (!r.photoCount) { fakeScore += 5; fakeReasons.push('No photos uploaded'); }
-            if ((r.rating === 1 || r.rating === 5) && (!r.text || r.text.length < 30)) { fakeScore += 10; fakeReasons.push('Extreme rating with minimal text'); }
-            if (r.text && r.rating === 5 && sent.label === 'NEGATIVE') { fakeScore += 15; fakeReasons.push('5-star but negative text (inconsistent)'); }
-            if (r.text && r.rating === 1 && sent.label === 'POSITIVE') { fakeScore += 15; fakeReasons.push('1-star but positive text (inconsistent)'); }
-
-            await db.review.update({
-                where: { id: dbReviews[i].id },
-                data: {
-                    sentimentScore: sent.compound,
-                    sentimentLabel: sent.label,
-                    fakeScore: Math.min(fakeScore, 100),
-                    isLikelyFake: fakeScore >= 50,
-                },
-            });
-        }
-
-        await db.reviewAnalysis.update({
-            where: { id: analysisId },
-            data: {
-                analysisData: JSON.stringify(analysisResult),
-                status: 'COMPLETED',
-            },
-        });
-
-        console.log(`[REVIEW] ✅ Completed: "${business.name}" (${reviews.length} reviews)`);
-
-    } catch (error: any) {
-        console.error(`[REVIEW] ❌ Error:`, error);
-        await db.reviewAnalysis.update({
-            where: { id: analysisId },
-            data: { status: 'FAILED', error: error?.message || 'Unknown analysis error' },
-        });
-    }
+    return new NextResponse(customReadable.readable, {
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+        },
+    });
 }

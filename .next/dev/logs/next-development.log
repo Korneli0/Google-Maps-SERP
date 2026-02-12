@@ -1,303 +1,2130 @@
-[00:00:00.681] Server  LOG     ✓ Ready in 474ms
-[00:00:09.859] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+[00:00:00.932] Server  LOG     ✓ Ready in 714ms
+[00:00:11.287] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:09.859] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+[00:00:11.287] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:14.783] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
+[00:00:20.732] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:14.783] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
+[00:00:20.732] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:16.677] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
+[00:01:51.040] Server  ERROR   ⨯ ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:01:51.185] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.185] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.185] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.185] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.185] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.850] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.955] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.955] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.955] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.955] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:51.955] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:52.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:55.995] Server  ERROR   ⨯ ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:01:56.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:56.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:56.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:56.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:56.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:57.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:57.157] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:57.157] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:57.157] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:01:57.157] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:00.996] Server  ERROR   ⨯ ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+
+./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:02:01.154] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.154] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.154] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.154] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.154] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.277] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.277] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.277] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.277] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:01.277] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.158] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.446] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.446] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.446] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.446] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:02.446] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:03.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:190:11
+Ecmascript file had an error
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+> 190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+      |           ^^^^^^^^^
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+  193 |     // Velocity spikes
+
+the name `lowEffort` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:03.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:189:11
+Ecmascript file had an error
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+> 189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+      |           ^^^^^^
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  192 |
+
+the name `noText` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:03.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:188:11
+Ecmascript file had an error
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+  187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+> 188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+      |           ^^^^^^^^^^^^^
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+
+the name `oneReviewOnly` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:03.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:191:11
+Ecmascript file had an error
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+> 191 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+      |           ^^^^^^^^^
+  192 |
+  193 |     // Velocity spikes
+  194 |     const monthly = groupByMonth(reviews);
+
+the name `photoless` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:02:03.156] Browser ERROR   ./src/lib/reviewAnalyzerCompute2.ts:187:11
+Ecmascript file had an error
+  185 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+  186 |     const photoless = reviews.filter(r => !r.photoCount || r.photoCount === 0);
+> 187 |     const suspicious = reviews.filter(r => r.fakeScore >= 50);
+      |           ^^^^^^^^^^
+  188 |     const oneReviewOnly = reviews.filter(r => r.reviewCount !== undefined && r.reviewCount <= 1);
+  189 |     const noText = reviews.filter(r => !r.text || r.text.trim().length === 0);
+  190 |     const lowEffort = reviews.filter(r => r.wordCount < 5);
+
+the name `suspicious` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewAnalyzerCompute2.ts
+    ./src/lib/reviewAnalyzer.ts
+    ./src/app/api/reviews/route.ts
+[00:03:50.727] Server  LOG     ✓ Compiled in 126ms
+[00:06:22.084] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:16.678] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
+[00:06:22.084] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:35.164] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
+[00:06:37.233] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
+[00:06:37.463] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
+[00:06:46.729] Server  LOG     [INFO] [REVIEW_SCRAPER] Waiting for business panel to render...
+[00:07:01.731] Server  LOG     [INFO] [REVIEW_SCRAPER] Business name element not found — waiting longer...
+[00:07:06.736] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
+[00:07:06.753] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Unknown Business", 4.3★, 0 reviews
+[00:07:06.753] Server  LOG     [INFO] [REVIEW_SCRAPER] ⚠️ totalReviews is 0 — waiting for full render...
+[00:07:11.758] Server  LOG     [INFO] [REVIEW_SCRAPER] Re-extracted: "Unknown Business", 4.3★, 0 reviews
+[00:07:11.759] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
+[00:07:13.826] Server  LOG     [INFO] [REVIEW_SCRAPER] Waiting for review elements to load...
+[00:07:13.831] Server  LOG     [INFO] [REVIEW_SCRAPER] Review elements detected.
+[00:07:13.831] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
+[00:07:18.900] Server  LOG     [INFO] [REVIEW_SCRAPER] Review elements visible: 30
+[00:07:18.900] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 100 reviews (this may take a while)...
+[00:07:19.715] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 20 / ~100 reviews...
+[00:07:26.159] Server  LOG     [INFO] [REVIEW_SCRAPER] All 100 reviews loaded.
+[00:07:26.159] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
+[00:07:26.167] Server  LOG     [INFO] [REVIEW_SCRAPER] Successfully scraped 100 reviews for "Unknown Business"
+[00:07:26.220] Server  LOG     [ReviewAnalyzer] 100 reviews → 100 after dedup
+[00:07:35.400] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:35.164] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
+[00:07:35.400] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:05.103] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+[00:08:31.524] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:05.103] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+[00:08:31.524] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:07.639] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /tools. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:07.639] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /tools. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:08.263] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:08.263] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:17.767] Server  LOG     [REVIEW] Starting scrape for cmljynofu0000uswz54go05je...
-[00:01:17.776] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[00:01:17.940] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[00:01:22.133] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[00:01:22.142] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[00:01:24.305] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[00:01:27.392] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 544 reviews (this may take a while)...
-[00:01:28.207] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 40 / ~544 reviews...
-[00:01:36.250] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 240 / ~544 reviews...
-[00:01:44.305] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 420 / ~544 reviews...
-[00:01:49.948] Server  LOG     [INFO] [REVIEW_SCRAPER] All 560 reviews loaded.
-[00:01:49.948] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[00:01:49.981] Server  LOG     [INFO] [REVIEW_SCRAPER] Successfully scraped 560 reviews for "Cash For Junk Cars LLC"
-[00:01:50.018] Server  LOG     [REVIEW] Saving 560 reviews...
-[00:01:50.296] Server  LOG     [REVIEW] Running 103-metric analysis...
-[00:01:50.611] Server  LOG     [REVIEW] ✅ Completed: "Cash For Junk Cars LLC" (560 reviews)
-[00:01:56.513] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:01:56.513] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:32:37.117] Server  LOG     ✓ Compiled in 111ms
-[00:33:00.590] Server  LOG     ✓ Compiled in 23ms
-[00:54:20.086] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:54:20.086] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:54:21.519] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:54:21.519] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:58:06.542] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:58:06.542] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:00:11.016] Server  LOG     ✓ Compiled in 88ms
-[01:00:28.226] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:00:28.226] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:00:50.806] Server  LOG     ✓ Compiled in 127ms
-[01:01:32.574] Server  LOG     ✓ Compiled in 139ms
-[01:02:12.656] Server  LOG     ✓ Compiled in 109ms
-[01:02:45.972] Server  LOG     ✓ Compiled in 111ms
-[01:04:08.023] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:04:08.023] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:04:27.400] Server  LOG     [REVIEW] Starting scrape for cmlk0wwjx00vhuswzqalfop5q...
-[01:04:27.409] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[01:04:27.578] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[01:04:31.444] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:04:31.447] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:04:33.521] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:04:36.605] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 544 reviews (this may take a while)...
-[01:04:37.418] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 40 / ~544 reviews...
-[01:04:45.458] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 240 / ~544 reviews...
-[01:04:53.508] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 420 / ~544 reviews...
-[01:04:59.153] Server  LOG     [INFO] [REVIEW_SCRAPER] All 560 reviews loaded.
-[01:04:59.153] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[01:04:59.191] Server  LOG     [INFO] [REVIEW_SCRAPER] Successfully scraped 560 reviews for "Cash For Junk Cars LLC"
-[01:04:59.229] Server  LOG     [REVIEW] Saving 560 reviews...
-[01:04:59.516] Server  LOG     [REVIEW] Running 150+ metric deep analysis...
-[01:04:59.517] Server  LOG     [ReviewAnalyzer] 560 reviews → 280 after dedup
-[01:04:59.843] Server  LOG     [REVIEW] ✅ Completed: "Cash For Junk Cars LLC" (560 reviews)
-[01:05:41.533] Server  LOG     [REVIEW] Starting scrape for cmlk0yhr301qyuswzxsknj2rq...
-[01:05:41.533] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[01:05:41.697] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[01:05:45.727] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:05:45.729] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:05:47.811] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:05:50.894] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 799 reviews (this may take a while)...
-[01:05:51.729] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 40 / ~799 reviews...
-[01:05:59.789] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 240 / ~799 reviews...
-[01:06:07.860] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 440 / ~799 reviews...
-[01:06:15.937] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 640 / ~799 reviews...
-[01:06:22.404] Server  LOG     [INFO] [REVIEW_SCRAPER] All 800 reviews loaded.
-[01:06:22.405] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[01:06:22.471] Server  LOG     [INFO] [REVIEW_SCRAPER] Successfully scraped 800 reviews for "Lola Restaurant"
-[01:06:22.533] Server  LOG     [REVIEW] Saving 800 reviews...
-[01:06:22.960] Server  LOG     [REVIEW] Running 150+ metric deep analysis...
-[01:06:22.961] Server  LOG     [ReviewAnalyzer] 800 reviews → 400 after dedup
-[01:06:23.434] Server  LOG     [REVIEW] ✅ Completed: "Lola Restaurant" (800 reviews)
-[01:06:37.177] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:06:37.177] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:14:54.220] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:14:54.220] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:15:18.122] Server  LOG     ✓ Compiled in 109ms
-[01:15:19.004] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:15:19.004] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:15:54.866] Server  LOG     ✓ Compiled in 90ms
-[01:16:24.000] Server  LOG     ✓ Compiled in 78ms
-[01:16:50.967] Server  LOG     ✓ Compiled in 30ms
-[01:17:26.803] Server  LOG     ✓ Compiled in 49ms
-[01:19:45.306] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:19:45.306] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:20:07.106] Server  LOG     [REVIEW] Starting scrape for cmlk1h1mx02zsuswzltmv4q0u...
-[01:20:07.116] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[01:20:07.666] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[01:20:12.670] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:20:12.672] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Unknown Business", 0★, 0 reviews
-[01:20:12.672] Server  LOG     [INFO] [REVIEW_SCRAPER] ⚠️ totalReviews is 0 — page may not have loaded properly
-[01:20:12.672] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:20:12.674] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:20:14.697] Server  LOG     [INFO] [REVIEW_SCRAPER] Initial review elements visible: 0
-[01:20:14.698] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 50 reviews (this may take a while)...
-[01:20:15.538] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 0 / ~50 reviews...
-[01:20:23.569] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 0 / ~50 reviews...
-[01:20:27.587] Server  LOG     [INFO] [REVIEW_SCRAPER] No new reviews loaded after 16 attempts. Stopping at 0.
-[01:20:27.587] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[01:20:27.589] Server  LOG     [INFO] [REVIEW_SCRAPER] Attempt 1 failed: Scraped 0 reviews — DOM selectors may have changed
-[01:20:27.589] Server  LOG     [INFO] [REVIEW_SCRAPER] Retry attempt 2...
-[01:20:31.386] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:20:31.389] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Toki Restaurant", 4.3★, 0 reviews
-[01:20:31.390] Server  LOG     [INFO] [REVIEW_SCRAPER] ⚠️ totalReviews is 0 — page may not have loaded properly
-[01:20:31.390] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:20:31.396] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:20:33.400] Server  LOG     [INFO] [REVIEW_SCRAPER] Initial review elements visible: 0
-[01:20:33.400] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 50 reviews (this may take a while)...
-[01:20:34.207] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 0 / ~50 reviews...
-[01:20:42.235] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 0 / ~50 reviews...
-[01:20:46.247] Server  LOG     [INFO] [REVIEW_SCRAPER] No new reviews loaded after 16 attempts. Stopping at 0.
-[01:20:46.247] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[01:20:46.249] Server  LOG     [INFO] [REVIEW_SCRAPER] Attempt 2 failed: Scraped 0 reviews — DOM selectors may have changed
-[01:20:46.282] Server  ERROR   [REVIEW] ❌ Error: Error: Scraped 0 reviews — DOM selectors may have changed
-[01:21:15.727] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:21:15.727] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:21:59.047] Server  LOG     [REVIEW] Starting scrape for cmlk1jg0e030kuswz1iqtke8s...
-[01:21:59.048] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[01:21:59.204] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[01:22:04.168] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:22:04.171] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Cash For Junk Cars Chicago Smart Tow Inc", 4.7★, 285 reviews
-[01:22:04.171] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:22:06.281] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:22:11.407] Server  LOG     [INFO] [REVIEW_SCRAPER] Initial review elements visible: 30
-[01:22:11.407] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 285 reviews (this may take a while)...
-[01:22:12.216] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 60 / ~285 reviews...
-[01:22:18.649] Server  LOG     [INFO] [REVIEW_SCRAPER] All 300 reviews loaded.
-[01:22:18.649] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[01:22:18.671] Server  LOG     [INFO] [REVIEW_SCRAPER] Successfully scraped 300 reviews for "Cash For Junk Cars Chicago Smart Tow Inc"
-[01:22:18.704] Server  LOG     [REVIEW] Saving 300 reviews...
-[01:22:18.881] Server  LOG     [REVIEW] Running 150+ metric deep analysis...
-[01:22:18.881] Server  LOG     [ReviewAnalyzer] 300 reviews → 100 after dedup
-[01:22:19.057] Server  LOG     [REVIEW] ✅ Completed: "Cash For Junk Cars Chicago Smart Tow Inc" (300 reviews)
-[01:22:41.747] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:22:41.747] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:25:08.086] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:25:08.086] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:30:35.658] Server  LOG     [REVIEW] Starting scrape for cmlk1uimp03hluswzmsndao1l...
-[01:30:35.677] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[01:30:36.228] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[01:30:41.101] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:30:41.104] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Toki Restaurant", 4.3★, 43 reviews
-[01:30:41.104] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:30:43.221] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:30:46.293] Server  LOG     [INFO] [REVIEW_SCRAPER] Initial review elements visible: 0
-[01:30:46.293] Server  LOG     [INFO] [REVIEW_SCRAPER] No review elements yet — waiting longer...
-[01:30:51.296] Server  LOG     [INFO] [REVIEW_SCRAPER] After extra wait: 0 review elements
-[01:30:51.296] Server  LOG     [INFO] [REVIEW_SCRAPER] Attempt 1 failed: No review elements found on page after waiting
-[01:30:51.296] Server  LOG     [INFO] [REVIEW_SCRAPER] Retry attempt 2...
-[01:30:55.451] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:30:55.453] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Unknown Business", 0★, 0 reviews
-[01:30:55.454] Server  LOG     [INFO] [REVIEW_SCRAPER] ⚠️ totalReviews is 0 — page may not have loaded properly
-[01:30:55.454] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:30:57.496] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:31:00.501] Server  LOG     [INFO] [REVIEW_SCRAPER] Initial review elements visible: 0
-[01:31:00.501] Server  LOG     [INFO] [REVIEW_SCRAPER] No review elements yet — waiting longer...
-[01:31:05.504] Server  LOG     [INFO] [REVIEW_SCRAPER] After extra wait: 0 review elements
-[01:31:05.504] Server  LOG     [INFO] [REVIEW_SCRAPER] Attempt 2 failed: No review elements found on page after waiting
-[01:31:05.545] Server  ERROR   [REVIEW] ❌ Error: Error: No review elements found on page after waiting
-[01:34:14.471] Server  LOG     [REVIEW] Starting scrape for cmlk1z7gx03i6uswzplul8c70...
-[01:34:14.479] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[01:34:14.681] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[01:34:21.385] Server  LOG     [INFO] [REVIEW_SCRAPER] Waiting for business panel to render...
-[01:34:21.392] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:34:21.402] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Toki Restaurant", 4.3★, 1799 reviews
-[01:34:21.403] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:34:23.494] Server  LOG     [INFO] [REVIEW_SCRAPER] Waiting for review elements to load...
-[01:34:23.498] Server  LOG     [INFO] [REVIEW_SCRAPER] Review elements detected.
-[01:34:23.498] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:34:28.566] Server  LOG     [INFO] [REVIEW_SCRAPER] Review elements visible: 30
-[01:34:28.567] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 1799 reviews (this may take a while)...
-[01:34:29.380] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 40 / ~1799 reviews...
-[01:34:37.437] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 240 / ~1799 reviews...
-[01:34:45.496] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 440 / ~1799 reviews...
-[01:34:53.567] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 640 / ~1799 reviews...
-[01:35:01.677] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 820 / ~1799 reviews...
-[01:35:09.760] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 960 / ~1799 reviews...
-[01:35:17.883] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1040 / ~1799 reviews...
-[01:35:25.988] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1140 / ~1799 reviews...
-[01:35:34.100] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1240 / ~1799 reviews...
-[01:35:42.256] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1320 / ~1799 reviews...
-[01:35:50.379] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1380 / ~1799 reviews...
-[01:35:58.516] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1460 / ~1799 reviews...
-[01:36:06.688] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1500 / ~1799 reviews...
-[01:36:14.986] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1520 / ~1799 reviews...
-[01:36:23.067] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1580 / ~1799 reviews...
-[01:36:31.160] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1620 / ~1799 reviews...
-[01:36:39.248] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1660 / ~1799 reviews...
-[01:36:47.355] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1700 / ~1799 reviews...
-[01:36:55.505] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1740 / ~1799 reviews...
-[01:37:03.685] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1780 / ~1799 reviews...
-[01:37:06.112] Server  LOG     [INFO] [REVIEW_SCRAPER] All 1800 reviews loaded.
-[01:37:06.112] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[01:37:06.260] Server  LOG     [INFO] [REVIEW_SCRAPER] Removed 900 duplicate reviews (1800 raw → 900 unique)
-[01:37:06.260] Server  LOG     [INFO] [REVIEW_SCRAPER] Successfully scraped 900 reviews for "Toki Restaurant"
-[01:37:06.334] Server  LOG     [REVIEW] Saving 900 reviews...
-[01:37:06.822] Server  LOG     [REVIEW] Running 150+ metric deep analysis...
-[01:37:06.823] Server  LOG     [ReviewAnalyzer] 900 reviews → 900 after dedup
-[01:37:07.403] Server  LOG     [REVIEW] ✅ Completed: "Toki Restaurant" (900 reviews)
-[01:41:51.476] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:41:51.477] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:45:54.251] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:45:54.251] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:46:16.301] Server  LOG     [REVIEW] Starting scrape for cmlk2eofu04x6uswz91x96c7s...
-[01:46:16.311] Server  LOG     [INFO] [REVIEW_SCRAPER] Launching browser...
-[01:46:16.480] Server  LOG     [INFO] [REVIEW_SCRAPER] Navigating to business page...
-[01:46:24.103] Server  LOG     [INFO] [REVIEW_SCRAPER] Waiting for business panel to render...
-[01:46:24.111] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting business info...
-[01:46:24.118] Server  LOG     [INFO] [REVIEW_SCRAPER] Found: "Toki Restaurant", 4.3★, 1799 reviews
-[01:46:24.118] Server  LOG     [INFO] [REVIEW_SCRAPER] Opening reviews tab...
-[01:46:26.204] Server  LOG     [INFO] [REVIEW_SCRAPER] Waiting for review elements to load...
-[01:46:26.209] Server  LOG     [INFO] [REVIEW_SCRAPER] Review elements detected.
-[01:46:26.209] Server  LOG     [INFO] [REVIEW_SCRAPER] Sorting reviews by newest...
-[01:46:31.264] Server  LOG     [INFO] [REVIEW_SCRAPER] Review elements visible: 30
-[01:46:31.264] Server  LOG     [INFO] [REVIEW_SCRAPER] Scrolling to load all 1799 reviews (this may take a while)...
-[01:46:32.083] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 40 / ~1799 reviews...
-[01:46:40.136] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 240 / ~1799 reviews...
-[01:46:48.200] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 440 / ~1799 reviews...
-[01:46:56.271] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 640 / ~1799 reviews...
-[01:47:04.382] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 800 / ~1799 reviews...
-[01:47:12.631] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 900 / ~1799 reviews...
-[01:47:20.720] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1020 / ~1799 reviews...
-[01:47:28.889] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1120 / ~1799 reviews...
-[01:47:37.043] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1200 / ~1799 reviews...
-[01:47:45.182] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1280 / ~1799 reviews...
-[01:47:53.360] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1360 / ~1799 reviews...
-[01:48:01.499] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1420 / ~1799 reviews...
-[01:48:09.647] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1480 / ~1799 reviews...
-[01:48:17.955] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1540 / ~1799 reviews...
-[01:48:26.101] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1600 / ~1799 reviews...
-[01:48:34.272] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1660 / ~1799 reviews...
-[01:48:42.454] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1700 / ~1799 reviews...
-[01:48:50.615] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1740 / ~1799 reviews...
-[01:48:58.875] Server  LOG     [INFO] [REVIEW_SCRAPER] Loaded 1780 / ~1799 reviews...
-[01:49:01.315] Server  LOG     [INFO] [REVIEW_SCRAPER] All 1800 reviews loaded.
-[01:49:01.315] Server  LOG     [INFO] [REVIEW_SCRAPER] Extracting review data from page...
-[01:49:01.508] Server  LOG     [INFO] [REVIEW_SCRAPER] Removed 900 duplicate reviews (1800 raw → 900 unique)
-[01:49:01.508] Server  LOG     [INFO] [REVIEW_SCRAPER] Successfully scraped 900 reviews for "Toki Restaurant"
-[01:49:01.573] Server  LOG     [REVIEW] Saving 900 reviews...
-[01:49:02.119] Server  LOG     [REVIEW] Running 150+ metric deep analysis...
-[01:49:02.120] Server  LOG     [ReviewAnalyzer] 900 reviews → 900 after dedup
-[01:49:02.834] Server  LOG     [REVIEW] ✅ Completed: "Toki Restaurant" (900 reviews)
-[01:49:34.135] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[01:49:34.135] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /reviews/[id]. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[00:09:54.987] Server  LOG     ✓ Compiled in 85ms
+[00:10:32.178] Server  ERROR   ⨯ ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:10:33.154] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:33.154] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:37.160] Server  ERROR   ⨯ ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:10:38.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:38.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:42.165] Server  ERROR   ⨯ ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:10:43.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:43.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:47.159] Server  ERROR   ⨯ ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:10:48.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:48.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:52.161] Server  ERROR   ⨯ ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:10:53.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:53.155] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:58.154] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:10:58.154] Browser ERROR   ./src/lib/reviewScraper.ts:200:15
+Ecmascript file had an error
+  198 |         // Approach 2: If still 0, look for a number in parentheses like (1,700)
+  199 |         // Approach 1: Primary aria-label or specific span
+> 200 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  201 |         if (reviewCountEl) {
+  202 |             const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+  203 |             if (match) totalReviews = parseInt(match);
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:11:04.365] Server  ERROR   ⨯ ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+
+
+[00:11:05.155] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:11:05.155] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:11:09.154] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:11:09.155] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:11:47.539] Server  LOG     ✓ Compiled in 55ms
+[00:11:48.154] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:11:48.155] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:11:59.443] Server  LOG     ✓ Compiled in 32ms
+[00:12:00.155] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:12:00.155] Browser ERROR   ./src/lib/reviewScraper.ts:193:15
+Ecmascript file had an error
+  191 |         // Approach 1: aria-label containing digits (works regardless of language)
+  192 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+> 193 |         const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
+      |               ^^^^^^^^^^^^^
+  194 |         if (reviewCountEl) {
+  195 |             const match = reviewCountEl.textContent?.match(/[\d,.]+/);
+  196 |             if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+
+the name `reviewCountEl` is defined multiple times
+
+Import trace:
+  App Route:
+    ./src/lib/reviewScraper.ts
+    ./src/app/api/reviews/route.ts
+[00:12:04.547] Server  LOG     ✓ Compiled in 90ms

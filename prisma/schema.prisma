@@ -110,7 +110,7 @@ model Review {
   analysis        ReviewAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
   reviewerName    String
   reviewerUrl     String?
-  localGuideLevel Int?
+  reviewImage     String?
   reviewCount     Int?
   photoCount      Int?
   rating          Int

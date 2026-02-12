@@ -6,6 +6,5 @@
   "/api/system/lookback/route": "app/api/system/lookback/route.js",
   "/page": "app/page.js",
   "/reviews/[id]/page": "app/reviews/[id]/page.js",
-  "/reviews/page": "app/reviews/page.js",
-  "/tools/page": "app/tools/page.js"
+  "/reviews/page": "app/reviews/page.js"
 }

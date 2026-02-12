@@ -44,7 +44,7 @@ function calculateFakeScore(review: ScrapedReview, sentiment: SentimentResult): 
     if (!review.text || review.text.trim().length === 0) { score += 15; reasons.push('No review text provided'); }
     else if (review.text.length < 20) { score += 10; reasons.push('Extremely short review text'); }
 
-    if (!review.localGuideLevel || review.localGuideLevel === 0) { score += 10; reasons.push('Not a Local Guide'); }
+
 
     if (review.reviewCount !== undefined && review.reviewCount <= 1) { score += 20; reasons.push('Single-review account (first/only review)'); }
     else if (review.reviewCount !== undefined && review.reviewCount <= 3) { score += 10; reasons.push('Very few total reviews on account'); }

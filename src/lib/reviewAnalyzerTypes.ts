@@ -90,9 +90,6 @@ export interface LegitimacyMetrics {
     overallTrustScore: number;
     totalSuspicious: number;
     suspiciousPercentage: number;
-    localGuideCount: number;
-    localGuidePercentage: number;
-    localGuideDistribution: { level: string; count: number; percentage: number }[];
     noProfileReviewers: number;
     oneReviewOnly: number;
     oneReviewPercentage: number;
@@ -168,7 +165,7 @@ export interface CompetitiveMetrics {
 export interface ReviewerMetrics {
     averageReviewsPerReviewer: number;
     averagePhotosPerReviewer: number;
-    topReviewers: { name: string; reviewCount: number; avgRating: number; isLocalGuide: boolean }[];
+    topReviewers: { name: string; reviewCount: number; avgRating: number }[];
     returningReviewers: number;        // reviewers who updated reviews
     reviewerLoyaltyIndicators: string[];
 }

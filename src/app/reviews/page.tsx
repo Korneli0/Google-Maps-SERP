@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
     MessageSquareText, Plus, Search, Star, Clock, AlertTriangle,
-    CheckCircle, Trash2, ExternalLink, Loader2, MapPin, Building2, X
+    CheckCircle, Trash2, ExternalLink, Loader2, MapPin, Building2, X, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 interface ReviewAnalysisSummary {
@@ -36,12 +36,21 @@ export default function ReviewsPage() {
     const [previewUrl, setPreviewUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
+    const [logs, setLogs] = useState<{ msg: string; type: 'info' | 'error' | 'success' }[]>([]);
+    const [showTerminal, setShowTerminal] = useState(false);
+    const [terminalCollapsed, setTerminalCollapsed] = useState(false);
 
     useEffect(() => {
         fetchAnalyses();
         const interval = setInterval(fetchAnalyses, 5000);
         return () => clearInterval(interval);
     }, []);
+
+    // Auto-scroll terminal
+    useEffect(() => {
+        const el = document.getElementById('terminal-end');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, [logs]);
 
     async function fetchAnalyses() {
         try {
@@ -89,6 +98,8 @@ export default function ReviewsPage() {
         if (!preview || !previewUrl) return;
         setSubmitting(true);
         setError('');
+        setLogs([]);
+        setShowTerminal(true);
 
         try {
             const res = await fetch('/api/reviews', {
@@ -103,18 +114,47 @@ export default function ReviewsPage() {
                 }),
             });
 
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Failed to start analysis');
+            if (!res.body) throw new Error('No response body');
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            if (data.msg) {
+                                setLogs(prev => [...prev, { msg: data.msg, type: data.type }]);
+                            }
+                            if (data.type === 'complete') {
+                                // Analysis done
+                            }
+                        } catch { /* ignore parse errors */ }
+                    }
+                }
             }
 
             setUrl('');
             setPreview(null);
             setPreviewUrl('');
-            fetchAnalyses();
+            setSubmitting(false);
+
+            // Keep terminal open for a moment to show success
+            setTimeout(() => {
+                setShowTerminal(false);
+                fetchAnalyses();
+            }, 2000);
+
         } catch (err: any) {
             setError(err.message);
-        } finally {
+            setLogs(prev => [...prev, { msg: `Error: ${err.message}`, type: 'error' }]);
             setSubmitting(false);
         }
     }
@@ -345,6 +385,54 @@ export default function ReviewsPage() {
                     </div>
                 )}
             </div>
+
+            {/* Floating Terminal Widget */}
+            {showTerminal && (
+                <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${terminalCollapsed ? 'w-64' : 'w-[380px] sm:w-[450px]'} pointer-events-none`}>
+                    <div className="bg-[#1e1e1e] rounded-2xl shadow-2xl overflow-hidden border border-white/10 flex flex-col max-h-[500px] pointer-events-auto">
+                        {/* Terminal Header */}
+                        <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between shrink-0 border-b border-white/5 cursor-pointer" onClick={() => setTerminalCollapsed(!terminalCollapsed)}>
+                            <div className="flex items-center gap-2">
+                                <div className="flex gap-1.5">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/30" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/30" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/30" />
+                                </div>
+                                <span className="ml-2 text-[10px] text-gray-400 font-mono uppercase tracking-wider">
+                                    {terminalCollapsed ? 'Scraper Paused' : 'Scraper Console'}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                {submitting && <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />}
+                                <button className="p-1 hover:bg-white/10 rounded transition-colors">
+                                    {terminalCollapsed ? <ChevronUp className="w-3.5 h-3.5 text-gray-400" /> : <ChevronDown className="w-3.5 h-3.5 text-gray-400" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Terminal Body */}
+                        {!terminalCollapsed && (
+                            <div className="p-4 overflow-y-auto font-mono text-[11px] space-y-1.5 flex-1 bg-black/40 backdrop-blur-md h-[300px]" >
+                                {logs.map((log, i) => (
+                                    <div key={i} className={`flex items-start gap-2 ${log.type === 'error' ? 'text-red-400' :
+                                        log.type === 'success' ? 'text-green-400' :
+                                            log.msg.includes('Loaded') ? 'text-blue-300' : 'text-gray-300'
+                                        }`}>
+                                        <span className="opacity-30 select-none whitespace-nowrap">{new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                                        <span className="break-all">{log.msg}</span>
+                                    </div>
+                                ))}
+                                {submitting && (
+                                    <div className="text-gray-500 animate-pulse flex items-center gap-1">
+                                        <span className="w-1.5 h-3 bg-gray-500" />
+                                    </div>
+                                )}
+                                <div id="terminal-end" />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

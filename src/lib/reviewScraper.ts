@@ -5,7 +5,7 @@ export interface ScrapedReview {
     reviewId?: string;
     reviewerName: string;
     reviewerUrl?: string;
-    localGuideLevel?: number;
+    reviewImage?: string;
     reviewCount?: number;
     photoCount?: number;
     rating: number;
@@ -188,26 +188,24 @@ async function extractBusinessInfo(page: Page): Promise<ScrapedBusinessInfo> {
         // Total reviews — try multiple approaches
         let totalReviews = 0;
 
-        // Approach 1: aria-label containing digits (works regardless of language)
-        const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe');
+        // Approach 1: Primary aria-label or specific span
+        const reviewCountEl = document.querySelector('div.F7nice span[aria-label*="review"], span.RDApEe, button[jsaction*="review.list"] span.D67Sbc');
         if (reviewCountEl) {
-            const match = reviewCountEl.textContent?.match(/[\d,.]+/);
-            if (match) totalReviews = parseInt(match[0].replace(/[,.\.\s]/g, ''));
+            const match = reviewCountEl.textContent?.replace(/[^\d]/g, '');
+            if (match) totalReviews = parseInt(match);
         }
 
-        // Approach 2: If still 0, look for a number in parentheses like (1,700)
+        // Approach 2: Deep search in common containers
         if (totalReviews === 0) {
-            const allSpans = document.querySelectorAll('div.F7nice span, span.RDApEe, button[jsaction*="review"] span');
-            for (const span of allSpans) {
-                const txt = span.textContent || '';
-                // Must be in parentheses to avoid matching the rating (4.3)
-                const m = txt.match(/\(([\d,.\.٬]+)\)/);
+            const containers = ['div.F7nice', 'div.jANrlb', 'div.TIvO8b', 'button[jsaction*="review"]'];
+            for (const sel of containers) {
+                const el = document.querySelector(sel);
+                if (!el) continue;
+                const txt = el.textContent || '';
+                const m = txt.match(/\(([\d,.\s]+)\)/) || txt.match(/([\d,.\s]+)\s*(?:reviews|Critiques|Bewertungen)/i);
                 if (m) {
                     const num = parseInt(m[1].replace(/[^\d]/g, ''));
-                    if (num >= 10 && num < 1000000) {
-                        totalReviews = num;
-                        break;
-                    }
+                    if (num > 0 && num < 1000000) { totalReviews = num; break; }
                 }
             }
         }
@@ -348,7 +346,21 @@ async function scrollAndCollectReviews(
 
         if (currentCount === lastCount) {
             noNewReviewsCount++;
-            if (noNewReviewsCount > 15) {
+
+            // "Jiggle" the scroll to trigger lazy loading if stuck
+            if (noNewReviewsCount > 5) {
+                await page.evaluate((selector) => {
+                    const el = document.querySelector(selector);
+                    if (el) {
+                        el.scrollTop -= 500; // Scroll up a bit
+                        setTimeout(() => { el.scrollTop += 500; }, 200); // Scroll back down
+                    }
+                }, scrollContainerSelector);
+                await page.waitForTimeout(1000);
+            }
+
+            // High patience threshold for large lists
+            if (noNewReviewsCount > 40) {
                 log(`No new reviews loaded after ${noNewReviewsCount} attempts. Stopping at ${currentCount}.`);
                 break;
             }
@@ -429,36 +441,27 @@ async function scrollAndCollectReviews(
                 const profileLink = el.querySelector('button.WEBjve');
                 const reviewerUrl = profileLink?.getAttribute('data-href') || '';
 
-                // Local Guide info
-                let localGuideLevel = 0;
+                // Review Image (if any)
+                // Look for a button with background-image style inside the review
+                // Class `Tya61d` is common for attached photos
+                let reviewImage = '';
+                const imgBtn = el.querySelector('button.Tya61d');
+                if (imgBtn) {
+                    const style = imgBtn.getAttribute('style') || '';
+                    const match = style.match(/url\("?([^")]+)"?\)/);
+                    if (match) reviewImage = match[1];
+                }
+
+                // Review/Photo counts (helpful context, keep for now)
                 let reviewCount = 0;
                 let photoCount = 0;
-                const badgeEl = el.querySelector('div.RfnDt span');
-                if (badgeEl) {
-                    const badgeText = badgeEl.textContent || '';
-                    const levelMatch = badgeText.match(/Level (\d+)/i);
-                    if (levelMatch) localGuideLevel = parseInt(levelMatch[1]);
 
-                    const reviewsMatch = badgeText.match(/(\d+)\s*review/i);
-                    if (reviewsMatch) reviewCount = parseInt(reviewsMatch[1]);
-
-                    const photosMatch = badgeText.match(/(\d+)\s*photo/i);
-                    if (photosMatch) photoCount = parseInt(photosMatch[1]);
-                }
-
-                // Also check the subtitle line for review/photo counts
-                const subtitleEl = el.querySelector('div.RfnDt');
-                if (subtitleEl) {
-                    const subText = subtitleEl.textContent || '';
-                    if (!reviewCount) {
-                        const rc = subText.match(/(\d+)\s*review/i);
-                        if (rc) reviewCount = parseInt(rc[1]);
-                    }
-                    if (!photoCount) {
-                        const pc = subText.match(/(\d+)\s*photo/i);
-                        if (pc) photoCount = parseInt(pc[1]);
-                    }
-                }
+                // Attempt to parse "X reviews" text if present
+                const subText = el.textContent || '';
+                const rc = subText.match(/(\d+)\s*reviews?/i);
+                if (rc) reviewCount = parseInt(rc[1]);
+                const pc = subText.match(/(\d+)\s*photos?/i);
+                if (pc) photoCount = parseInt(pc[1]);
 
                 // Rating
                 const ratingEl = el.querySelector('span.kvMYJc');
@@ -490,7 +493,7 @@ async function scrollAndCollectReviews(
                         reviewId: reviewId || undefined,
                         reviewerName,
                         reviewerUrl: reviewerUrl || undefined,
-                        localGuideLevel: localGuideLevel || undefined,
+
                         reviewCount: reviewCount || undefined,
                         photoCount: photoCount || undefined,
                         rating,

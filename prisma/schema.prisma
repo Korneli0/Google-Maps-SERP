@@ -86,3 +86,43 @@ model SystemLog {
   details   String?  // JSON string for extra data
   createdAt DateTime @default(now())
 }
+
+model ReviewAnalysis {
+  id            String   @id @default(cuid())
+  businessName  String
+  businessUrl   String
+  placeId       String?
+  totalReviews  Int      @default(0)
+  averageRating Float    @default(0)
+  analysisData  String?  // Full JSON blob of 100+ metrics
+  status        String   @default("PENDING") // PENDING, SCRAPING, ANALYZING, COMPLETED, FAILED
+  error         String?
+  createdAt     DateTime @default(now())
+  reviews       Review[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Review {
+  id              String   @id @default(cuid())
+  analysisId      String
+  analysis        ReviewAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  reviewerName    String
+  reviewerUrl     String?
+  localGuideLevel Int?
+  reviewCount     Int?
+  photoCount      Int?
+  rating          Int
+  text            String?
+  publishedDate   String?
+  responseText    String?
+  responseDate    String?
+  sentimentScore  Float?
+  sentimentLabel  String?
+  isLikelyFake    Boolean  @default(false)
+  fakeScore       Float?
+  analysisBlob    String?
+
+  @@index([analysisId])
+}

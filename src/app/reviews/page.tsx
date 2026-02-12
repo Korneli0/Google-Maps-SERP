@@ -1,0 +1,350 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import {
+    MessageSquareText, Plus, Search, Star, Clock, AlertTriangle,
+    CheckCircle, Trash2, ExternalLink, Loader2, MapPin, Building2, X
+} from 'lucide-react';
+
+interface ReviewAnalysisSummary {
+    id: string;
+    businessName: string;
+    businessUrl: string;
+    totalReviews: number;
+    averageRating: number;
+    status: string;
+    error?: string;
+    createdAt: string;
+}
+
+interface BusinessPreview {
+    name: string;
+    averageRating: number;
+    totalReviews: number;
+    placeId?: string;
+    address?: string;
+    category?: string;
+}
+
+export default function ReviewsPage() {
+    const [analyses, setAnalyses] = useState<ReviewAnalysisSummary[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [url, setUrl] = useState('');
+    const [previewing, setPreviewing] = useState(false);
+    const [preview, setPreview] = useState<BusinessPreview | null>(null);
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        fetchAnalyses();
+        const interval = setInterval(fetchAnalyses, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    async function fetchAnalyses() {
+        try {
+            const res = await fetch('/api/reviews');
+            const data = await res.json();
+            setAnalyses(Array.isArray(data) ? data : []);
+        } catch { /* ignore */ } finally {
+            setLoading(false);
+        }
+    }
+
+    async function previewBusiness() {
+        if (!url.trim()) return;
+        setPreviewing(true);
+        setError('');
+        setPreview(null);
+
+        try {
+            const res = await fetch('/api/reviews/preview', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url.trim() }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to preview business');
+            }
+
+            if (!data.name || data.name === 'Unknown Business') {
+                throw new Error('Could not find a business at this URL. Please check the link and try again.');
+            }
+
+            setPreview(data);
+            setPreviewUrl(url.trim());
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setPreviewing(false);
+        }
+    }
+
+    async function confirmAndStartAnalysis() {
+        if (!preview || !previewUrl) return;
+        setSubmitting(true);
+        setError('');
+
+        try {
+            const res = await fetch('/api/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: previewUrl,
+                    businessName: preview.name,
+                    totalReviews: preview.totalReviews,
+                    averageRating: preview.averageRating,
+                    placeId: preview.placeId,
+                }),
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to start analysis');
+            }
+
+            setUrl('');
+            setPreview(null);
+            setPreviewUrl('');
+            fetchAnalyses();
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    async function deleteAnalysis(id: string) {
+        if (!confirm('Delete this analysis?')) return;
+        await fetch(`/api/reviews/${id}`, { method: 'DELETE' });
+        fetchAnalyses();
+    }
+
+    const statusIcon = (status: string) => {
+        switch (status) {
+            case 'SCRAPING': return <Loader2 className="w-4 h-4 text-amber-500 animate-spin" />;
+            case 'ANALYZING': return <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />;
+            case 'COMPLETED': return <CheckCircle className="w-4 h-4 text-emerald-500" />;
+            case 'FAILED': return <AlertTriangle className="w-4 h-4 text-red-500" />;
+            default: return <Clock className="w-4 h-4 text-gray-400" />;
+        }
+    };
+
+    const statusLabel = (status: string) => {
+        switch (status) {
+            case 'SCRAPING': return 'Scraping Reviews...';
+            case 'ANALYZING': return 'Analyzing...';
+            case 'COMPLETED': return 'Completed';
+            case 'FAILED': return 'Failed';
+            default: return 'Pending';
+        }
+    };
+
+    return (
+        <div className="space-y-8">
+            {/* Header */}
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-200">
+                        <MessageSquareText className="w-5 h-5 text-white" />
+                    </div>
+                    Review Intelligence
+                </h1>
+                <p className="text-gray-500 mt-1 text-sm">Deep analysis of Google reviews across 100+ data points</p>
+            </div>
+
+            {/* URL Input */}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <h2 className="text-sm font-semibold text-gray-900 mb-3">Analyze a Business</h2>
+                <p className="text-xs text-gray-500 mb-4">
+                    Paste a Google Maps business URL to preview and confirm the business before starting analysis.
+                </p>
+                <div className="flex gap-3">
+                    <div className="flex-1 relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                            type="text"
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && previewBusiness()}
+                            placeholder="https://www.google.com/maps/place/..."
+                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-gray-50"
+                            disabled={previewing}
+                        />
+                    </div>
+                    <button
+                        onClick={previewBusiness}
+                        disabled={previewing || !url.trim()}
+                        className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl text-sm font-semibold hover:from-violet-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm shadow-violet-200 transition-all"
+                    >
+                        {previewing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                        {previewing ? 'Looking up...' : 'Look Up'}
+                    </button>
+                </div>
+                {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+            </div>
+
+            {/* ===== CONFIRMATION MODAL ===== */}
+            {preview && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-violet-600 to-purple-600 p-5 text-white flex items-center justify-between">
+                            <div>
+                                <h3 className="text-lg font-bold">Confirm Business</h3>
+                                <p className="text-violet-200 text-xs">Is this the right business?</p>
+                            </div>
+                            <button
+                                onClick={() => { setPreview(null); setPreviewUrl(''); }}
+                                className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Business Card */}
+                        <div className="p-6 space-y-4">
+                            <div className="flex items-start gap-4">
+                                <div className="w-14 h-14 rounded-xl bg-violet-100 flex items-center justify-center shrink-0">
+                                    <Building2 className="w-7 h-7 text-violet-600" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="text-lg font-bold text-gray-900">{preview.name}</h4>
+                                    {preview.category && (
+                                        <p className="text-xs text-gray-500 mt-0.5">{preview.category}</p>
+                                    )}
+                                    {preview.address && (
+                                        <p className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                                            <MapPin className="w-3 h-3" /> {preview.address}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="grid grid-cols-3 gap-3">
+                                <div className="bg-amber-50 rounded-xl p-3 text-center">
+                                    <div className="flex items-center justify-center gap-1">
+                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                        <span className="text-xl font-bold text-amber-700">{preview.averageRating}</span>
+                                    </div>
+                                    <p className="text-[10px] text-amber-600 mt-0.5">Avg Rating</p>
+                                </div>
+                                <div className="bg-violet-50 rounded-xl p-3 text-center">
+                                    <span className="text-xl font-bold text-violet-700">{preview.totalReviews.toLocaleString()}</span>
+                                    <p className="text-[10px] text-violet-600 mt-0.5">Total Reviews</p>
+                                </div>
+                                <div className="bg-blue-50 rounded-xl p-3 text-center">
+                                    <span className="text-xl font-bold text-blue-700">103</span>
+                                    <p className="text-[10px] text-blue-600 mt-0.5">Metrics</p>
+                                </div>
+                            </div>
+
+                            {/* Estimate */}
+                            <div className="bg-gray-50 rounded-xl p-3 text-xs text-gray-600 flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-gray-400 shrink-0" />
+                                <span>
+                                    Estimated time: ~{Math.max(1, Math.ceil(preview.totalReviews / 50))} min
+                                    {preview.totalReviews > 200 ? ' (large business — the scraper will load all reviews)' : ''}
+                                </span>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    onClick={() => { setPreview(null); setPreviewUrl(''); }}
+                                    className="flex-1 px-4 py-3 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmAndStartAnalysis}
+                                    disabled={submitting}
+                                    className="flex-1 px-4 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl text-sm font-semibold hover:from-violet-700 hover:to-purple-700 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm shadow-violet-200 transition-all"
+                                >
+                                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+                                    {submitting ? 'Starting...' : 'Start Full Analysis'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Analyses List */}
+            <div>
+                <h2 className="text-sm font-semibold text-gray-900 mb-4">Analysis History</h2>
+
+                {loading ? (
+                    <div className="flex items-center justify-center py-12 text-gray-400">
+                        <Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading...
+                    </div>
+                ) : analyses.length === 0 ? (
+                    <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+                        <MessageSquareText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-500 text-sm">No analyses yet. Paste a Google Maps URL above to get started.</p>
+                    </div>
+                ) : (
+                    <div className="space-y-3">
+                        {analyses.map((a) => (
+                            <div key={a.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 hover:shadow-md transition-shadow">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                                        {/* Status */}
+                                        <div className="flex items-center gap-2 min-w-[140px]">
+                                            {statusIcon(a.status)}
+                                            <span className="text-xs font-medium text-gray-600">{statusLabel(a.status)}</span>
+                                        </div>
+
+                                        {/* Business info */}
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="text-sm font-semibold text-gray-900 truncate">{a.businessName}</h3>
+                                            <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
+                                                {a.status === 'COMPLETED' && (
+                                                    <>
+                                                        <span className="flex items-center gap-1">
+                                                            <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                                                            {a.averageRating.toFixed(1)}
+                                                        </span>
+                                                        <span>{a.totalReviews} reviews</span>
+                                                    </>
+                                                )}
+                                                <span>{new Date(a.createdAt).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex items-center gap-2">
+                                        {a.status === 'COMPLETED' && (
+                                            <Link href={`/reviews/${a.id}`}>
+                                                <button className="px-4 py-2 bg-violet-50 text-violet-600 rounded-lg text-xs font-semibold hover:bg-violet-100 transition-colors flex items-center gap-1.5">
+                                                    <ExternalLink className="w-3 h-3" />
+                                                    View Report
+                                                </button>
+                                            </Link>
+                                        )}
+                                        {a.status === 'FAILED' && (
+                                            <span className="text-xs text-red-500 max-w-[200px] truncate">{a.error}</span>
+                                        )}
+                                        <button
+                                            onClick={() => deleteAnalysis(a.id)}
+                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

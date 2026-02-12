@@ -22,12 +22,44 @@
   },
   "dynamicRoutes": [
     {
+      "page": "/api/reviews/[id]",
+      "regex": "^/api/reviews/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/reviews/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/api/scans/[id]",
       "regex": "^/api/scans/([^/]+?)(?:/)?$",
       "routeKeys": {
         "nxtPid": "nxtPid"
       },
       "namedRegex": "^/api/scans/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/scans/[id]/rerun",
+      "regex": "^/api/scans/([^/]+?)/rerun(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/scans/(?<nxtPid>[^/]+?)/rerun(?:/)?$"
+    },
+    {
+      "page": "/api/scans/[id]/stop",
+      "regex": "^/api/scans/([^/]+?)/stop(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/scans/(?<nxtPid>[^/]+?)/stop(?:/)?$"
+    },
+    {
+      "page": "/reviews/[id]",
+      "regex": "^/reviews/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/reviews/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
       "page": "/scans/[id]",
@@ -58,6 +90,12 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
+      "page": "/api/alerts",
+      "regex": "^/api/alerts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/alerts(?:/)?$"
+    },
+    {
       "page": "/api/dashboard",
       "regex": "^/api/dashboard(?:/)?$",
       "routeKeys": {},
@@ -70,16 +108,94 @@
       "namedRegex": "^/api/geocode(?:/)?$"
     },
     {
+      "page": "/api/geocode/city",
+      "regex": "^/api/geocode/city(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/geocode/city(?:/)?$"
+    },
+    {
+      "page": "/api/locations/autocomplete",
+      "regex": "^/api/locations/autocomplete(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/locations/autocomplete(?:/)?$"
+    },
+    {
+      "page": "/api/logs",
+      "regex": "^/api/logs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/logs(?:/)?$"
+    },
+    {
+      "page": "/api/proxies",
+      "regex": "^/api/proxies(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/proxies(?:/)?$"
+    },
+    {
+      "page": "/api/proxies/fetch",
+      "regex": "^/api/proxies/fetch(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/proxies/fetch(?:/)?$"
+    },
+    {
+      "page": "/api/reviews",
+      "regex": "^/api/reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/reviews(?:/)?$"
+    },
+    {
+      "page": "/api/reviews/preview",
+      "regex": "^/api/reviews/preview(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/reviews/preview(?:/)?$"
+    },
+    {
       "page": "/api/scans",
       "regex": "^/api/scans(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/scans(?:/)?$"
     },
     {
+      "page": "/api/scans/history",
+      "regex": "^/api/scans/history(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/scans/history(?:/)?$"
+    },
+    {
+      "page": "/api/scans/lookup",
+      "regex": "^/api/scans/lookup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/scans/lookup(?:/)?$"
+    },
+    {
+      "page": "/api/settings",
+      "regex": "^/api/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/settings(?:/)?$"
+    },
+    {
+      "page": "/api/system/lookback",
+      "regex": "^/api/system/lookback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/system/lookback(?:/)?$"
+    },
+    {
+      "page": "/help",
+      "regex": "^/help(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/help(?:/)?$"
+    },
+    {
       "page": "/reports",
       "regex": "^/reports(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/reports(?:/)?$"
+    },
+    {
+      "page": "/reviews",
+      "regex": "^/reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/reviews(?:/)?$"
     },
     {
       "page": "/scans",
@@ -104,6 +220,12 @@
       "regex": "^/settings(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/settings(?:/)?$"
+    },
+    {
+      "page": "/tools",
+      "regex": "^/tools(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tools(?:/)?$"
     }
   ],
   "dataRoutes": [],

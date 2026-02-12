@@ -34,6 +34,7 @@
     "jspdf-autotable": "^5.0.7",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.563.0",
+    "natural": "^8.1.0",
     "next": "^16.1.6",
     "playwright": "^1.58.1",
     "playwright-core": "^1.58.1",
@@ -42,8 +43,11 @@
     "react-dom": "^19.2.4",
     "react-leaflet": "^5.0.0",
     "recharts": "^3.7.0",
+    "sentiment": "^5.0.2",
     "tailwind-merge": "^3.4.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wink-eng-lite-web-model": "^1.8.1",
+    "wink-nlp": "^2.4.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.24",
